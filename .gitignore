@@ -56,3 +56,6 @@ app.*.map.json
 # Ignore Python bytecode files
 *.pyc
 __pycache__/
+
+# 환경 변수 파일 (API 키 포함 가능성)
+.env
