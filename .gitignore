@@ -5,7 +5,8 @@
 *.swp
 .DS_Store
 .atom/
-.build/
+bulid/
+flutter/build/
 .buildlog/
 .history
 .svn/
