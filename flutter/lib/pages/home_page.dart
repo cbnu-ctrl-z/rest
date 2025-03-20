@@ -29,7 +29,7 @@ class HomePage extends StatelessWidget {
               onPressed: () {
                 Navigator.pushNamed(context, '/freetime', arguments: email);
               },
-              child: Text('나의 공강 시간 등록!'),
+              child: Text('나의 공강 등록!'),
             ),
           ],
         ),
