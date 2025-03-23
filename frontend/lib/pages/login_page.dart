@@ -45,12 +45,12 @@ class _LoginPageState extends State<LoginPage> {
 
     if (id.isEmpty || password.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('아이디와 비밀번호를 입력하세요!')),
+        SnackBar(content: Text('이메일과 비밀번호를 입력하세요!')),
       );
       return;
     }
 
-    const url = 'http://192.168.219.100:5000/login';
+    const url = 'http://10.0.2.2:5000/login';
     try {
       final response = await http.post(
         Uri.parse(url),
