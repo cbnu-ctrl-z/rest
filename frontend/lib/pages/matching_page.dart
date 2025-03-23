@@ -9,7 +9,7 @@ class MatchingPage extends StatefulWidget {
 
 class _MatchingPageState extends State<MatchingPage> {
   List<dynamic> matches = [];
-  String? email;
+  String? id;
 
   @override
   void initState() {
@@ -20,18 +20,18 @@ class _MatchingPageState extends State<MatchingPage> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // context가 사용 가능한 시점에 email 가져오기
-    email ??= ModalRoute.of(context)?.settings.arguments as String? ?? 'user@example.com';
-    _fetchMatches(email!); // 최초 한 번만 호출
+    // context가 사용 가능한 시점에 id 가져오기
+    id ??= ModalRoute.of(context)?.settings.arguments as String? ?? 'user@example.com';
+    _fetchMatches(id!); // 최초 한 번만 호출
   }
 
-  Future<void> _fetchMatches(String email) async {
-    const url = 'http://172.30.67.229:5000/match_freetime';
+  Future<void> _fetchMatches(String id) async {
+    const url = 'http://192.168.219.100:5000/match_freetime';
     try {
       final response = await http.post(
         Uri.parse(url),
         headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'email': email}),
+        body: jsonEncode({'id': id}), // 여기서 email을 id로 변경
       );
 
       print('Match Response: ${response.statusCode}, ${response.body}');

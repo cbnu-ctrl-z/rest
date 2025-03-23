@@ -19,7 +19,9 @@ class _SettingsPageState extends State<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final email = ModalRoute.of(context)?.settings.arguments as String? ?? 'user@example.com';
+    // 'id' 값을 Map<String, dynamic>에서 추출
+    final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>? ?? {};
+    final id = args['id'] as String? ?? 'unknown_user'; // Map에서 'id' 값을 추출
     final themeNotifier = Provider.of<ThemeNotifier>(context);
 
     return Scaffold(
@@ -29,7 +31,7 @@ class _SettingsPageState extends State<SettingsPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('현재 사용자: $email'),
+            Text('현재 사용자: $id'), // id로 수정
             SizedBox(height: 20),
             SwitchListTile(
               title: Text('다크 모드'),

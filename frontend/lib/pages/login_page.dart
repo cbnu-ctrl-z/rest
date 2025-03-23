@@ -8,61 +8,65 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  late final TextEditingController _emailController;
+  late final TextEditingController _idController;
   late final TextEditingController _passwordController;
-  late final FocusNode _emailFocusNode;
+  late final FocusNode _idFocusNode;
   late final FocusNode _passwordFocusNode;
 
   @override
   void initState() {
     super.initState();
-    _emailController = TextEditingController();
+    _idController = TextEditingController();
     _passwordController = TextEditingController();
-    _emailFocusNode = FocusNode();
+    _idFocusNode = FocusNode();
     _passwordFocusNode = FocusNode();
   }
 
   @override
   void dispose() {
-    _emailController.dispose();
+    _idController.dispose();
     _passwordController.dispose();
-    _emailFocusNode.dispose();
+    _idFocusNode.dispose();
     _passwordFocusNode.dispose();
     super.dispose();
   }
 
   Future<void> _login() async {
-    _emailFocusNode.unfocus();
+    _idFocusNode.unfocus();
     _passwordFocusNode.unfocus();
 
-    String email = _emailController.text.trim();
+    String id = _idController.text.trim();
     String password = _passwordController.text.trim();
 
-    if (email.isEmpty || password.isEmpty) {
+    if (id.isEmpty || password.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('아이디와 비밀번호를 입력하세요!')),
       );
       return;
     }
 
-    const url = 'http://172.30.67.229:5000/login';
+    const url = 'http://192.168.219.100:5000/login';
     try {
       final response = await http.post(
         Uri.parse(url),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
-          'id': email,  // id는 email로 사용
+          'id': id,
           'password': password,
         }),
       );
 
       if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        final name = data['name'];
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('로그인 성공! 홈 화면으로 이동합니다.')),
         );
-        _emailController.clear();
+        _idController.clear();
         _passwordController.clear();
-        Navigator.pushNamed(context, '/home', arguments: email); // 로그인 성공 후 홈 화면으로 이동
+        // Map<String, dynamic>으로 전달
+        Navigator.pushNamed(context, '/home', arguments: {'id': id, 'name': name});
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('로그인 실패: ${response.body}')),
@@ -84,10 +88,10 @@ class _LoginPageState extends State<LoginPage> {
         child: Column(
           children: [
             TextField(
-              controller: _emailController,
-              focusNode: _emailFocusNode,
+              controller: _idController,
+              focusNode: _idFocusNode,
               decoration: InputDecoration(labelText: '아이디'),
-              keyboardType: TextInputType.emailAddress,
+              keyboardType: TextInputType.text,
             ),
             TextField(
               controller: _passwordController,

@@ -74,14 +74,17 @@ class _FreeTimeInputPageState extends State<FreeTimeInputPage> {
       return;
     }
 
-    final email = ModalRoute.of(context)?.settings.arguments as String? ?? 'user@example.com';
-    const url = 'http://172.30.67.229:5000/add_freetime';
+    // 'id' 값을 Map<String, dynamic>에서 안전하게 추출
+    final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>? ?? {};
+    final id = args['id'] as String? ?? 'user@example.com'; // Map에서 'id' 값을 추출
+
+    const url = 'http://192.168.219.100:5000/add_freetime';
     try {
       final response = await http.post(
         Uri.parse(url),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
-          'email': email,
+          'id': id, // 여기서 email을 id로 변경
           'day': selectedDay,
           'start_time': '${startTime!.hour.toString().padLeft(2, '0')}:00', // HH:00 형식
           'end_time': '${endTime!.hour.toString().padLeft(2, '0')}:00', // HH:00 형식
@@ -98,7 +101,7 @@ class _FreeTimeInputPageState extends State<FreeTimeInputPage> {
           startTime = null;
           endTime = null;
         });
-        Navigator.pushNamed(context, '/match', arguments: email);
+        Navigator.pushNamed(context, '/match', arguments: id); // 변경된 부분
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('공강 등록 실패: ${response.body}')),
