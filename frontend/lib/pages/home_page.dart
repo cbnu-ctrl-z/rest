@@ -16,14 +16,11 @@ class _HomePageState extends State<HomePage> {
   ];
 
   void _onItemTapped(int index) {
-    final email = ModalRoute
-        .of(context)
-        ?.settings
-        .arguments as String? ?? 'user@example.com';
+    final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>? ?? {};
+    final id = args['id'] as String? ?? 'user@example.com'; // Map에서 'id' 값을 추출
     if (index == 1) {
-      Navigator.pushNamed(context, '/freetime', arguments: email);
-    }
-    else {
+      Navigator.pushNamed(context, '/freetime', arguments: {'id': id}); // id를 전달
+    } else {
       setState(() {
         _selectedIndex = index;
       });
@@ -32,7 +29,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final email = ModalRoute.of(context)?.settings.arguments as String? ?? 'user@example.com';
+    final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>? ?? {};
+    final id = args['id'] as String? ?? 'user@example.com'; // Map에서 'id' 값을 추출
 
     return Scaffold(
       appBar: AppBar(
@@ -41,7 +39,7 @@ class _HomePageState extends State<HomePage> {
           IconButton(
             icon: Icon(Icons.settings),
             onPressed: () {
-              Navigator.pushNamed(context, '/settings', arguments: email);
+              Navigator.pushNamed(context, '/settings', arguments: {'id': id}); // id를 전달
             },
             tooltip: '설정',
           ),
@@ -79,8 +77,9 @@ class _HomePageState extends State<HomePage> {
 class HomeTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final email = ModalRoute.of(context)?.settings.arguments as String? ?? 'user@example.com';
-    return Center(child: Text('환영합니다, $email!'));
+    final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>? ?? {};
+    final id = args['id'] as String? ?? 'user@example.com'; // Map에서 'id' 값을 추출
+    return Center(child: Text('환영합니다, $id!')); // id로 수정
   }
 }
 

@@ -9,45 +9,45 @@ class SignUpPage extends StatefulWidget {
 
 class _SignUpPageState extends State<SignUpPage> {
   late final TextEditingController _nameController;
-  late final TextEditingController _emailController;
+  late final TextEditingController _idController;
   late final TextEditingController _passwordController;
-  late final TextEditingController _confirmPasswordController;  // 비밀번호 확인용 컨트롤러
+  late final TextEditingController _confirmPasswordController;
   late final FocusNode _nameFocusNode;
-  late final FocusNode _emailFocusNode;
+  late final FocusNode _idFocusNode;
   late final FocusNode _passwordFocusNode;
-  late final FocusNode _confirmPasswordFocusNode;  // 비밀번호 확인용 FocusNode
+  late final FocusNode _confirmPasswordFocusNode;
 
   @override
   void initState() {
     super.initState();
     _nameController = TextEditingController();
-    _emailController = TextEditingController();
+    _idController = TextEditingController();
     _passwordController = TextEditingController();
-    _confirmPasswordController = TextEditingController();  // 비밀번호 확인용 컨트롤러
+    _confirmPasswordController = TextEditingController();
     _nameFocusNode = FocusNode();
-    _emailFocusNode = FocusNode();
+    _idFocusNode = FocusNode();
     _passwordFocusNode = FocusNode();
-    _confirmPasswordFocusNode = FocusNode();  // 비밀번호 확인용 FocusNode
+    _confirmPasswordFocusNode = FocusNode();
   }
 
   @override
   void dispose() {
     _nameController.dispose();
-    _emailController.dispose();
+    _idController.dispose();
     _passwordController.dispose();
-    _confirmPasswordController.dispose();  // 비밀번호 확인용 컨트롤러 dispose
+    _confirmPasswordController.dispose();
     _nameFocusNode.dispose();
-    _emailFocusNode.dispose();
+    _idFocusNode.dispose();
     _passwordFocusNode.dispose();
-    _confirmPasswordFocusNode.dispose();  // 비밀번호 확인용 FocusNode dispose
+    _confirmPasswordFocusNode.dispose();
     super.dispose();
   }
 
   Future<void> _signUp() async {
     String name = _nameController.text.trim();
-    String id = _emailController.text.trim();
+    String id = _idController.text.trim();
     String password = _passwordController.text.trim();
-    String confirmPassword = _confirmPasswordController.text.trim();  // 비밀번호 확인값 받기
+    String confirmPassword = _confirmPasswordController.text.trim();
 
     if (name.isEmpty || id.isEmpty || password.isEmpty || confirmPassword.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -63,7 +63,7 @@ class _SignUpPageState extends State<SignUpPage> {
       return;
     }
 
-    const url = 'http://172.30.67.229:5000/signup';
+    const url = 'http://192.168.219.100:5000/signup';
     try {
       final response = await http.post(
         Uri.parse(url),
@@ -106,10 +106,10 @@ class _SignUpPageState extends State<SignUpPage> {
               decoration: InputDecoration(labelText: '이름'),
             ),
             TextField(
-              controller: _emailController,
-              focusNode: _emailFocusNode,
+              controller: _idController,
+              focusNode: _idFocusNode,
               decoration: InputDecoration(labelText: '아이디'),
-              keyboardType: TextInputType.emailAddress,
+              keyboardType: TextInputType.text,
             ),
             TextField(
               controller: _passwordController,
@@ -118,8 +118,8 @@ class _SignUpPageState extends State<SignUpPage> {
               obscureText: true,
             ),
             TextField(
-              controller: _confirmPasswordController,  // 비밀번호 확인 입력란 추가
-              focusNode: _confirmPasswordFocusNode,  // 비밀번호 확인 FocusNode
+              controller: _confirmPasswordController,
+              focusNode: _confirmPasswordFocusNode,
               decoration: InputDecoration(labelText: '비밀번호 확인'),
               obscureText: true,
             ),
