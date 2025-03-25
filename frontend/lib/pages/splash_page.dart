@@ -18,36 +18,39 @@ class _SplashPageState extends State<SplashPage> {
         opacity = 1.0; // 페이드 인
       });
     });
-    // 2초 후 페이드 아웃 시작, 3초 후 회원가입 화면으로 이동
+    // 2초 후 페이드 아웃 시작, 3초 후 로그인인 화면으로 이동
     Timer(Duration(seconds: 2), () {
       setState(() {
         opacity = 0.0; // 페이드 아웃
       });
     });
-    Timer(Duration(seconds: 3), () {
+    Timer(Duration(seconds: 2), () {
       Navigator.pushReplacementNamed(context, '/login');
     });
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: Align(
-        alignment: Alignment.center, // 가로와 세로 모두 중앙 정렬
+Widget build(BuildContext context) {
+  return Scaffold(
+    body: Container(
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage("assets/splash_Background_img.jpg"), // 원하는 배경 이미지
+          fit: BoxFit.cover, // 이미지를 화면에 꽉 차게 설정
+        ),
+      ),
+      child: Center(
         child: AnimatedOpacity(
           opacity: opacity,
           duration: Duration(seconds: 1),
-          child: Text(
-            ',',
-            style: TextStyle(
-              fontSize: 500,
-              color: Color(0xFF0066FF),
-              fontWeight: FontWeight.bold,
-            ),
-          ),
+          child: Image.asset(
+            "assets/simpo_w.jpg",
+            width:100,
+            height:100,
+          )
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 }
