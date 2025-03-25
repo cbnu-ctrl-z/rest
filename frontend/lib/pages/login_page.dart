@@ -65,7 +65,6 @@ class _LoginPageState extends State<LoginPage> {
         );
         _idController.clear();
         _passwordController.clear();
-        // Map<String, dynamic>으로 전달
         Navigator.pushNamed(context, '/home', arguments: {'id': id, 'name': name});
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -82,33 +81,73 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('로그인')),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            TextField(
-              controller: _idController,
-              focusNode: _idFocusNode,
-              decoration: InputDecoration(labelText: '아이디'),
-              keyboardType: TextInputType.text,
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Colors.blue.shade700, Colors.blue.shade300],
+          ),
+        ),
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.lock, size: 80, color: Colors.white),
+                SizedBox(height: 20),
+                TextField(
+                  controller: _idController,
+                  focusNode: _idFocusNode,
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: Colors.white,
+                    prefixIcon: Icon(Icons.person),
+                    labelText: '아이디',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 16),
+                TextField(
+                  controller: _passwordController,
+                  focusNode: _passwordFocusNode,
+                  obscureText: true,
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: Colors.white,
+                    prefixIcon: Icon(Icons.lock),
+                    labelText: '비밀번호',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 20),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: _login,
+                    style: ElevatedButton.styleFrom(
+                      padding: EdgeInsets.symmetric(vertical: 12),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      backgroundColor: Colors.white,
+                      foregroundColor: Colors.blue,
+                    ),
+                    child: Text('로그인', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () => Navigator.pushNamed(context, '/signup'),
+                  child: Text('계정이 없나요? 회원가입', style: TextStyle(color: Colors.white)),
+                ),
+              ],
             ),
-            TextField(
-              controller: _passwordController,
-              focusNode: _passwordFocusNode,
-              decoration: InputDecoration(labelText: '비밀번호'),
-              obscureText: true,
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _login,
-              child: Text('로그인'),
-            ),
-            TextButton(
-              onPressed: () => Navigator.pushNamed(context, '/signup'),
-              child: Text('계정이 없나요? 회원가입'),
-            ),
-          ],
+          ),
         ),
       ),
     );

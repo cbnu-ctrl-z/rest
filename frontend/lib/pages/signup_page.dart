@@ -8,40 +8,10 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
-  late final TextEditingController _nameController;
-  late final TextEditingController _idController;
-  late final TextEditingController _passwordController;
-  late final TextEditingController _confirmPasswordController;
-  late final FocusNode _nameFocusNode;
-  late final FocusNode _idFocusNode;
-  late final FocusNode _passwordFocusNode;
-  late final FocusNode _confirmPasswordFocusNode;
-
-  @override
-  void initState() {
-    super.initState();
-    _nameController = TextEditingController();
-    _idController = TextEditingController();
-    _passwordController = TextEditingController();
-    _confirmPasswordController = TextEditingController();
-    _nameFocusNode = FocusNode();
-    _idFocusNode = FocusNode();
-    _passwordFocusNode = FocusNode();
-    _confirmPasswordFocusNode = FocusNode();
-  }
-
-  @override
-  void dispose() {
-    _nameController.dispose();
-    _idController.dispose();
-    _passwordController.dispose();
-    _confirmPasswordController.dispose();
-    _nameFocusNode.dispose();
-    _idFocusNode.dispose();
-    _passwordFocusNode.dispose();
-    _confirmPasswordFocusNode.dispose();
-    super.dispose();
-  }
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _idController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController = TextEditingController();
 
   Future<void> _signUp() async {
     String name = _nameController.text.trim();
@@ -95,44 +65,68 @@ class _SignUpPageState extends State<SignUpPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('회원가입')),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            TextField(
-              controller: _nameController,
-              focusNode: _nameFocusNode,
-              decoration: InputDecoration(labelText: '이름'),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.blue.shade300, Colors.blue.shade800],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Card(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+              elevation: 8,
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.person_add, size: 80, color: Colors.blue),
+                    SizedBox(height: 10),
+                    _buildTextField(_nameController, Icons.person, '이름'),
+                    _buildTextField(_idController, Icons.email, '아이디'),
+                    _buildTextField(_passwordController, Icons.lock, '비밀번호', isPassword: true),
+                    _buildTextField(_confirmPasswordController, Icons.lock, '비밀번호 확인', isPassword: true),
+                    SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: _signUp,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        foregroundColor: Colors.blue,
+                        padding: EdgeInsets.symmetric(vertical: 12, horizontal: 50),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+                      ),
+                      child: Text('회원가입', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                    ),
+                    TextButton(
+                      onPressed: () => Navigator.pushNamed(context, '/login'),
+                      child: Text('이미 계정이 있나요? 로그인', style: TextStyle(color: Colors.blue)),
+                    ),
+                  ],
+                ),
+              ),
             ),
-            TextField(
-              controller: _idController,
-              focusNode: _idFocusNode,
-              decoration: InputDecoration(labelText: '아이디'),
-              keyboardType: TextInputType.text,
-            ),
-            TextField(
-              controller: _passwordController,
-              focusNode: _passwordFocusNode,
-              decoration: InputDecoration(labelText: '비밀번호'),
-              obscureText: true,
-            ),
-            TextField(
-              controller: _confirmPasswordController,
-              focusNode: _confirmPasswordFocusNode,
-              decoration: InputDecoration(labelText: '비밀번호 확인'),
-              obscureText: true,
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _signUp,
-              child: Text('회원가입'),
-            ),
-            TextButton(
-              onPressed: () => Navigator.pushNamed(context, '/login'),
-              child: Text('이미 계정이 있나요? 로그인'),
-            ),
-          ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTextField(TextEditingController controller, IconData icon, String hint, {bool isPassword = false}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: TextField(
+        controller: controller,
+        obscureText: isPassword,
+        decoration: InputDecoration(
+          prefixIcon: Icon(icon, color: Colors.blue),
+          hintText: hint,
+          filled: true,
+          fillColor: Colors.grey[200],
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(30), borderSide: BorderSide.none),
         ),
       ),
     );
