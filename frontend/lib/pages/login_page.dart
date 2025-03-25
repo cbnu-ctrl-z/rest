@@ -85,30 +85,18 @@ class _LoginPageState extends State<LoginPage> {
   @override
 Widget build(BuildContext context) {
   return Scaffold(
-    resizeToAvoidBottomInset: false, //배경화면 움직이지 않게 화면 스크롤 비활성화 
-    extendBodyBehindAppBar: true, //  AppBar 뒤에도 배경 확장
-    backgroundColor: Colors.transparent, //  Scaffold 배경 투명
-
+    resizeToAvoidBottomInset: false,
+    backgroundColor: Colors.white, //배경화면 움직이지 않게 화면 스크롤 비활성화 
     appBar: AppBar(
-      backgroundColor: Colors.transparent, //  AppBar 투명
-      elevation: 0, //  그림자 제거
+      backgroundColor: Colors.white, // 배경을 흰색
+      elevation: 0,
+      leading: IconButton(
+        onPressed: (){Navigator.pushNamed(context, '/home');},
+        icon: Icon(Icons.home, color: const Color.fromARGB(255, 58, 58, 58)),
+      ),// 그림자 X
     ),
-
     body: Stack(
       children: [
-        //  배경 이미지 (화면 전체 적용)
-        Positioned.fill(
-          child: ColorFiltered(
-          colorFilter: ColorFilter.mode(
-          Colors.black.withAlpha(100), //  투명도 조절 (0.0 ~ 1.0)
-          BlendMode.darken, //  배경을 어둡게 하는 효과
-        ),
-          child: Image.asset(
-            'assets/login_Background_img.jpg', // 이미지 경로
-            fit: BoxFit.cover, //  화면을 꽉 채우도록 설정
-          ),
-        ),
-        ),
         //  본문 UI 요소들
         SingleChildScrollView(
           child: SafeArea(
@@ -119,6 +107,11 @@ Widget build(BuildContext context) {
                   padding: const EdgeInsets.symmetric(horizontal: 25),
                   child: Column(
                     children: [
+                      Image.asset(
+                        'assets/simpo_b.jpg', // 이미지 경로
+                        width: 80, // 이미지의 너비
+                        height: 80, // 이미지의 높이
+                       ),
                       Text(
                         '쉼표',
                         style: TextStyle(
@@ -148,8 +141,8 @@ Widget build(BuildContext context) {
                             color: const Color.fromARGB(255, 78, 73, 73), //글자색 변경
                           ),
                           filled: true, //배경을 살짝 투명하게
-                          fillColor: Colors.white.withAlpha(200),
-                          border: OutlineInputBorder(),
+                          fillColor: Colors.transparent,
+                          border: UnderlineInputBorder(),
                           prefixIcon: Icon(Icons.person),
                         ),
                         keyboardType: TextInputType.emailAddress,
@@ -169,8 +162,8 @@ Widget build(BuildContext context) {
                             color: Colors.black,
                           ),
                           filled: true,
-                          fillColor: Colors.white.withAlpha(200),
-                          border: OutlineInputBorder(),
+                          fillColor: Colors.transparent,
+                          border: UnderlineInputBorder(),
                           prefixIcon: Icon(Icons.lock),
                           suffixIcon: IconButton(
                             icon: Icon(_obscureText ? Icons.visibility : Icons.visibility_off),
@@ -190,9 +183,9 @@ Widget build(BuildContext context) {
                         onPressed: _login,
                         style: ElevatedButton.styleFrom(
                           minimumSize: Size.fromHeight(55),
-                          backgroundColor: Color(0xFF2962FF),
+                          backgroundColor: Color(0xff36eff4),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: BorderRadius.circular(20),
                           ),
                         ),
                         child: Text(
@@ -206,13 +199,13 @@ Widget build(BuildContext context) {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text('계정이 없나요?', style: TextStyle(color: Colors.white)),
+                          Text('계정이 없으신가요?', style: TextStyle(color: const Color.fromARGB(255, 155, 150, 150))),
                           TextButton(
                             onPressed: () => Navigator.pushNamed(context, '/signup'),
                             child: Text(
                               '회원가입',
                               style: TextStyle(
-                                color: Color.fromARGB(255, 182, 179, 231),
+                                color: Color(0xff36eff4),
                                 fontSize: 16,
                                 fontWeight: FontWeight.w600,
                               ),
