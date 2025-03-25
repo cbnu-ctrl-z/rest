@@ -85,6 +85,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
 Widget build(BuildContext context) {
   return Scaffold(
+    resizeToAvoidBottomInset: false, //배경화면 움직이지 않게 화면 스크롤 비활성화 
     extendBodyBehindAppBar: true, //  AppBar 뒤에도 배경 확장
     backgroundColor: Colors.transparent, //  Scaffold 배경 투명
 
