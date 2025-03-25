@@ -63,7 +63,7 @@ class _SignUpPageState extends State<SignUpPage> {
       return;
     }
 
-    const url = 'http://172.30.67.229:5000/signup';
+    const url = 'http://10.0.2.2:5000/signup';
     try {
       final response = await http.post(
         Uri.parse(url),

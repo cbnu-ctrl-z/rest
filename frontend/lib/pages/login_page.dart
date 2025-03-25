@@ -56,7 +56,7 @@ class _LoginPageState extends State<LoginPage> {
         Uri.parse(url),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
-          'email': email,
+          'id': email,
           'password': password,
         }),
       );
