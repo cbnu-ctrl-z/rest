@@ -16,11 +16,16 @@ class _HomePageState extends State<HomePage> {
   ];
 
   void _onItemTapped(int index) {
-    final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>? ?? {};
+    final args = ModalRoute
+        .of(context)
+        ?.settings
+        .arguments as Map<String, dynamic>? ?? {};
     final id = args['id'] as String? ?? 'user@example.com'; // Map에서 'id' 값을 추출
     if (index == 1) {
-      Navigator.pushNamed(context, '/freetime', arguments: {'id': id}); // id를 전달
-    } else {
+      Navigator.pushNamed(
+          context, '/freetime', arguments: {'id': id}); // id를 전달
+    }
+    else {
       setState(() {
         _selectedIndex = index;
       });
@@ -79,7 +84,8 @@ class HomeTab extends StatelessWidget {
   Widget build(BuildContext context) {
     final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>? ?? {};
     final id = args['id'] as String? ?? 'user@example.com'; // Map에서 'id' 값을 추출
-    return Center(child: Text('환영합니다, $id!')); // id로 수정
+    final name = args['name'] as String ?? 'user';
+    return Center(child: Text('환영합니다, $name님!')); // name으로 수정
   }
 }
 
