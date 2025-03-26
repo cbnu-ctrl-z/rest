@@ -7,13 +7,13 @@ freetime_bp = Blueprint('freetime', __name__)
 def add_freetime():
     data = request.get_json()
     print("Received data:", data)
-    user_id = data.get('id')
+    email = data.get('email')
     day = data.get('day')
     start_time = data.get('start_time')
     end_time = data.get('end_time')
     users_collection = current_app.db['users']
 
-    if not all([user_id, day, start_time, end_time]):
+    if not all([email, day, start_time, end_time]):
         return jsonify({'error': '모든 필드를 입력해야 합니다'}), 400
 
     user = users_collection.find_one({'id': user_id})
@@ -22,7 +22,7 @@ def add_freetime():
 
     freetime = {'day': day, 'start_time': start_time, 'end_time': end_time}
     users_collection.update_one(
-        {'id': user_id},
+        {'email': email},
         {'$push': {'freetimes': freetime}}
     )
     return jsonify({'message': '공강 시간 추가 성공'}), 201
@@ -30,22 +30,22 @@ def add_freetime():
 @freetime_bp.route('/match_freetime', methods=['POST'])
 def match_freetime():
     data = request.get_json()
-    user_id = data.get('id')
-    users_collection = current_app.db['users']
+    email = data.get('email')
+    users_collection = current_app.db['users']  # request.app.db → current_app.db
 
-    user = users_collection.find_one({'id': user_id})
+    user = users_collection.find_one({'email': email})
     if not user or 'freetimes' not in user or not user['freetimes']:
         return jsonify([]), 200
 
     matches = []
-    for other_user in users_collection.find({'id': {'$ne': user_id}}):
+    for other_user in users_collection.find({'email': {'$ne': email}}):
         if 'freetimes' in other_user:
             for freetime in other_user['freetimes']:
                 for my_freetime in user['freetimes']:
                     if (freetime['day'] == my_freetime['day'] and
                         freetime['start_time'] == my_freetime['start_time'] and
-                        freetime['end_time'] == my_freetime['end_time']):
-                        matches.append({
+                        freetime['end_time'] == my_freetime['end_time']): #날짜 시작시간, 끝나는 시간이 완전히 같아야 매칭칭
+                        matches.append({ #리스트에 매칭된 다른사용자 데이터 저장
                             'name': other_user['name'],
                             'day': freetime['day'],
                             'start_time': freetime['start_time'],
