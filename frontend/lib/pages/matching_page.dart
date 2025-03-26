@@ -12,17 +12,10 @@ class _MatchingPageState extends State<MatchingPage> {
   String? id;
 
   @override
-  void initState() {
-    super.initState();
-    // initState에서는 아무것도 안 함
-  }
-
-  @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // context가 사용 가능한 시점에 id 가져오기
     id ??= ModalRoute.of(context)?.settings.arguments as String? ?? 'user@example.com';
-    _fetchMatches(id!); // 최초 한 번만 호출
+    _fetchMatches(id!);
   }
 
   Future<void> _fetchMatches(String id) async {
@@ -31,10 +24,9 @@ class _MatchingPageState extends State<MatchingPage> {
       final response = await http.post(
         Uri.parse(url),
         headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'id': id}), // 여기서 email을 id로 변경
+        body: jsonEncode({'id': id}),
       );
 
-      print('Match Response: ${response.statusCode}, ${response.body}');
       if (response.statusCode == 200) {
         setState(() {
           matches = jsonDecode(response.body);
@@ -45,7 +37,6 @@ class _MatchingPageState extends State<MatchingPage> {
         );
       }
     } catch (e) {
-      print('Match Error: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('매칭 에러: $e')),
       );
@@ -62,9 +53,20 @@ class _MatchingPageState extends State<MatchingPage> {
         itemCount: matches.length,
         itemBuilder: (context, index) {
           return ListTile(
-            title: Text(matches[index]['name']),
-            subtitle: Text(
-                '${matches[index]['day']} ${matches[index]['start_time']} - ${matches[index]['end_time']}'),
+            title: Text(matches[index]['name'] ?? '알 수 없는 사용자'),
+            subtitle: Text('${matches[index]['day']} ${matches[index]['start_time']} - ${matches[index]['end_time']}'),
+            trailing: Icon(Icons.chat_bubble_outline, color: Colors.blue),
+            onTap: () {
+              Navigator.pushNamed(
+                context,
+                '/chat',
+                arguments: {
+                  'id': id,
+                  'receiverId': matches[index]['id'] ?? '',
+                  'name': matches[index]['name'] ?? '알 수 없는 사용자',
+                },
+              );
+            },
           );
         },
       ),

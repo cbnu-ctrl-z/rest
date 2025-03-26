@@ -39,7 +39,7 @@ class _MyAppState extends State<MyApp> {
   // 스플래시 화면 후 회원가입 화면으로 이동하는 함수
   Future<void> _goToLoginPage() async {
     await Future.delayed(Duration(seconds: 2)); // 스플래시 화면 표시 시간 (2초)
-    Navigator.pushReplacementNamed(context, '/login'); // 로그인 화면으로 이동
+    Navigator.pushReplacementNamed(context, '/signup'); // 로그인 화면으로 이동
   }
 
   @override
@@ -63,6 +63,7 @@ class _MyAppState extends State<MyApp> {
               '/match': (context) => MatchingPage(),
               '/home': (context) => HomePage(),
               '/settings': (context) => SettingsPage(),
+              '/chat':(context) => ChatPage()
             },
           );
         },
