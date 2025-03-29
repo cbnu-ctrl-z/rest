@@ -50,7 +50,7 @@ class _LoginPageState extends State<LoginPage> {
       return;
     }
 
-    const url = 'http://192.168.219.100:5000/login';
+    const url = 'http://10.0.2.2:5000/login';
     try {
       final response = await http.post(
         Uri.parse(url),
@@ -206,6 +206,22 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                           ],
                         ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            TextButton(
+                              onPressed: () => Navigator.pushNamed(context, '/find'),
+                              child: Text(
+                                'ID/PW 찾기',
+                                style: TextStyle(
+                                  color: Color(0xff36eff4),
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                          ],
+                        )
                       ],
                     ),
                   ),
