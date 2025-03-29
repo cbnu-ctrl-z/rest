@@ -31,12 +31,13 @@ class _SignUpPageState extends State<SignUpPage> {
       return;
     }
 
-    if (!RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}\$').hasMatch(email)) {
+    if (!RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')
+      .hasMatch(email.trim())) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('유효한 이메일을 입력하세요!')),
       );
       return;
-    }
+}
 
     if (password != confirmPassword) {
       ScaffoldMessenger.of(context).showSnackBar(
