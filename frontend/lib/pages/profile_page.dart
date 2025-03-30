@@ -37,7 +37,7 @@ class _ProfilePageDetailedState extends State<ProfilePageDetailed> {
 
     try {
       final response = await http.get(
-        Uri.parse('http://192.168.219.115:5000/user_profile?id=$userId'),
+        Uri.parse('http://172.30.72.140:5000/user_profile?id=$userId'),
       );
 
       if (response.statusCode == 200) {
@@ -114,7 +114,7 @@ class _ProfilePageDetailedState extends State<ProfilePageDetailed> {
       // 파일과 요청을 생성
       var stream = http.ByteStream(DelegatingStream.typed(_imageFile!.openRead()));
       var length = await _imageFile!.length();
-      var uri = Uri.parse('http://192.168.219.115:5000/update_profile_image');
+      var uri = Uri.parse('http://172.30.72.140:5000/update_profile_image');
       
       var request = http.MultipartRequest('POST', uri);
       request.fields['id'] = userId!;

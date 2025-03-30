@@ -29,7 +29,7 @@ class _ChatPageState extends State<ChatPage> {
   Future<void> _fetchMessages() async {
     if (senderId == null || receiverId == null) return;
 
-    final url = Uri.parse('http://192.168.219.115:5000/get_messages?sender=$senderId&receiver=$receiverId');
+    final url = Uri.parse('http://172.30.72.140:5000/get_messages?sender=$senderId&receiver=$receiverId');
     try {
       final response = await http.get(url);
 
@@ -53,7 +53,7 @@ class _ChatPageState extends State<ChatPage> {
   Future<void> _sendMessage(String message) async {
     if (senderId == null || receiverId == null) return;
 
-    const url = 'http://192.168.219.115:5000/send_message';
+    const url = 'http://172.30.72.140:5000/send_message';
     try {
       final response = await http.post(
         Uri.parse(url),

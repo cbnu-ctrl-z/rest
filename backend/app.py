@@ -3,6 +3,7 @@ from pymongo import MongoClient
 from routes.auth import auth_bp
 from routes.freetime import freetime_bp
 from routes.chat import chat_bp
+from routes.profile_api import profile_bp  # 새로운 Blueprint 임포트
 import os
 
 app = Flask(__name__)
@@ -20,6 +21,7 @@ app.db = client['signup_db']
 app.register_blueprint(auth_bp)
 app.register_blueprint(freetime_bp)
 app.register_blueprint(chat_bp)
+app.register_blueprint(profile_bp)  # 새로운 Blueprint 등록
 
 # 업로드된 파일 제공을 위한 라우트 추가
 @app.route('/uploads/<path:filename>')
