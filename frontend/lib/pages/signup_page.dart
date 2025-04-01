@@ -31,7 +31,7 @@ class _SignUpPageState extends State<SignUpPage> {
       return;
     }
 
-    if (!RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}\$').hasMatch(email)) {
+    if (!RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$').hasMatch(email.trim())) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('유효한 이메일을 입력하세요!')),
       );
@@ -45,7 +45,7 @@ class _SignUpPageState extends State<SignUpPage> {
       return;
     }
 
-    const url = 'http://192.168.219.100:5000/signup';
+    const url = 'http://10.0.2.2:5000/signup';
     try {
       final response = await http.post(
         Uri.parse(url),
