@@ -20,17 +20,17 @@ class _SignUpPageState extends State<SignUpPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: true, // ✅ 키보드가 올라올 때 자동 조정 활성화
+      resizeToAvoidBottomInset: true,
       backgroundColor: Colors.white,
       body: SafeArea(
-        top: true, // ✅ SafeArea 정상 적용 (회색 공간 방지)
+        top: true,
         child: KeyboardVisibilityBuilder(
           builder: (context, isKeyboardVisible) {
             return Column(
               children: [
                 Expanded(
                   child: SingleChildScrollView(
-                    reverse: true, // ✅ 키보드가 올라오면 입력창이 최상단으로 이동함
+                    reverse: true,
                     padding: const EdgeInsets.symmetric(horizontal: 25),
                     child: Column(
                       children: [
