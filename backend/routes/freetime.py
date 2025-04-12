@@ -46,6 +46,7 @@ def match_freetime():
                         freetime['start_time'] == my_freetime['start_time'] and
                         freetime['end_time'] == my_freetime['end_time']):
                         matches.append({
+                            'id':other_user['id'],
                             'name': other_user['name'],
                             'day': freetime['day'],
                             'start_time': freetime['start_time'],

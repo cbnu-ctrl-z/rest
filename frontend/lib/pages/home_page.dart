@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'chat_button.dart'; // Chatbutton이 있는 파일
+// 필요 시 다른 import 추가
 
 class HomePage extends StatefulWidget {
   @override
@@ -8,24 +10,13 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
 
-  final List<Widget> _pages = [
-    HomeTab(),         // index 0
-    FreeTimePage(),    // index 1
-    ChatPage(),        // index 2
-    ProfilePage(),     // index 3
-  ];
-
   void _onItemTapped(int index) {
-    final args = ModalRoute
-        .of(context)
-        ?.settings
-        .arguments as Map<String, dynamic>? ?? {};
-    final id = args['id'] as String? ?? 'user@example.com'; // Map에서 'id' 값을 추출
+    final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>? ?? {};
+    final id = args['id'] as String? ?? 'user@example.com';
+
     if (index == 1) {
-      Navigator.pushNamed(
-          context, '/freetime', arguments: {'id': id}); // id를 전달
-    }
-    else {
+      Navigator.pushNamed(context, '/freetime', arguments: {'id': id});
+    } else {
       setState(() {
         _selectedIndex = index;
       });
@@ -35,7 +26,8 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>? ?? {};
-    final id = args['id'] as String? ?? 'user@example.com'; // Map에서 'id' 값을 추출
+    final id = args['id'] as String? ?? 'user@example.com';
+    final name = args['name'] as String? ?? 'user';
 
     return Scaffold(
       appBar: AppBar(
@@ -44,48 +36,44 @@ class _HomePageState extends State<HomePage> {
           IconButton(
             icon: Icon(Icons.settings),
             onPressed: () {
-              Navigator.pushNamed(context, '/settings', arguments: {'id': id}); // id를 전달
+              Navigator.pushNamed(context, '/settings', arguments: {'id': id});
             },
             tooltip: '설정',
           ),
         ],
       ),
-      body: _pages[_selectedIndex],
+      body: Builder(
+        builder: (context) {
+          if (_selectedIndex == 0) return HomeTab(id: id, name: name);
+          if (_selectedIndex == 1) return FreeTimePage(); // index 1은 push로 처리됨
+          if (_selectedIndex == 2) return Chatbutton(id: id); // ✅ id 전달
+          return ProfilePage(id: id); // ✅ id 전달 (필요한 경우)
+        },
+      ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
-        type: BottomNavigationBarType.fixed, // 4개 이상일 때 필요
+        type: BottomNavigationBarType.fixed,
         items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: '홈',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.access_time),
-            label: '공강 등록',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.chat),
-            label: '채팅',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.account_circle),
-            label: '프로필',
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: '홈'),
+          BottomNavigationBarItem(icon: Icon(Icons.access_time), label: '공강 등록'),
+          BottomNavigationBarItem(icon: Icon(Icons.chat), label: '채팅'),
+          BottomNavigationBarItem(icon: Icon(Icons.account_circle), label: '프로필'),
         ],
       ),
     );
   }
 }
 
-// 각 탭의 위젯들 정의
+// ✅ 각 탭 위젯들
 class HomeTab extends StatelessWidget {
+  final String id;
+  final String name;
+  const HomeTab({required this.id, required this.name});
+
   @override
   Widget build(BuildContext context) {
-    final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>? ?? {};
-    final id = args['id'] as String? ?? 'user@example.com'; // Map에서 'id' 값을 추출
-    final name = args['name'] as String ?? 'user';
-    return Center(child: Text('환영합니다, $name님!')); // name으로 수정
+    return Center(child: Text('환영합니다, $name님!'));
   }
 }
 
@@ -96,16 +84,16 @@ class FreeTimePage extends StatelessWidget {
   }
 }
 
-class ChatPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Center(child: Text('채팅 화면'));
-  }
-}
+// ✅ Chatbutton은 별도 파일로 분리되어 있고, import 되어야 함 (chat_button.dart)
+/// 이 파일에서 더 이상 Chatbutton 정의하지 마세요!
 
+// ✅ ProfilePage도 id를 필요로 하면 이렇게 수정하세요:
 class ProfilePage extends StatelessWidget {
+  final String id;
+  const ProfilePage({required this.id});
+
   @override
   Widget build(BuildContext context) {
-    return Center(child: Text('프로필 화면'));
+    return Center(child: Text('프로필: $id'));
   }
 }
