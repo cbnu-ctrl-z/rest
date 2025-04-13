@@ -1,0 +1,4 @@
+flutter/ephemeral
+*.cc 
+*.h
+*.cmake
