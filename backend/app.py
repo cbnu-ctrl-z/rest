@@ -7,9 +7,11 @@ from routes.auth import auth_bp
 from routes.freetime import freetime_bp
 from routes.chat import chat_bp  # 채팅 블루프린트 추가
 from routes.findidpw import findidpw_bp #idpw찾기 블루프린트 추가
+from routes.Profile_api import profile_bp  # 새로운 Blueprint 임포트
 from flask_socketio import SocketIO
 from flask_cors import CORS
 from routes.chat import init_socket
+from flask import send_from_directory
 
 load_dotenv() # 환경 변수 로드 (.env 파일에서 값을 가져올 수 있도록 설정)
 app = Flask(__name__)
@@ -40,11 +42,22 @@ app.register_blueprint(auth_bp)
 app.register_blueprint(freetime_bp)
 app.register_blueprint(chat_bp)  # 채팅 블루프린트 등록
 app.register_blueprint(findidpw_bp)  # findidpw 블루프린트 등록
+app.register_blueprint(profile_bp)  # 새로운 Blueprint 등록
 init_socket(socketio)
 
 @socketio.on('connect')
 def test_connect():
     print("Client connected")
+
+# 업로드 폴더 경로 설정
+UPLOAD_FOLDER = os.path.join(os.getcwd(), 'uploads')
+if not os.path.exists(UPLOAD_FOLDER):
+    os.makedirs(UPLOAD_FOLDER)
+
+# 업로드된 파일 제공을 위한 라우트 추가
+@app.route('/uploads/<path:filename>')
+def uploaded_file(filename):
+    return send_from_directory(UPLOAD_FOLDER, filename)
 
 # 서버 실행
 if __name__ == '__main__':
