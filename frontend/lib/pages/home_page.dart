@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'chat_button.dart'; // Chatbutton이 있는 파일
+import 'profile_page.dart'; // 추가한 프로필 페이지 import
 // 필요 시 다른 import 추가
 
 class HomePage extends StatefulWidget {
@@ -11,7 +12,9 @@ class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
 
   void _onItemTapped(int index) {
-    final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>? ?? {};
+    final args =
+        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>? ??
+        {};
     final id = args['id'] as String? ?? 'user@example.com';
 
     if (index == 1) {
@@ -25,7 +28,9 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>? ?? {};
+    final args =
+        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>? ??
+        {};
     final id = args['id'] as String? ?? 'user@example.com';
     final name = args['name'] as String? ?? 'user';
 
@@ -56,9 +61,15 @@ class _HomePageState extends State<HomePage> {
         type: BottomNavigationBarType.fixed,
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: '홈'),
-          BottomNavigationBarItem(icon: Icon(Icons.access_time), label: '공강 등록'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.access_time),
+            label: '공강 등록',
+          ),
           BottomNavigationBarItem(icon: Icon(Icons.chat), label: '채팅'),
-          BottomNavigationBarItem(icon: Icon(Icons.account_circle), label: '프로필'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.account_circle),
+            label: '프로필',
+          ),
         ],
       ),
     );
@@ -94,6 +105,18 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(child: Text('프로필: $id'));
+    // ProfilePageDetailed 위젯을 반환
+    return ProfilePageDetailed();
   }
 }
+
+/*
+class ProfilePage extends StatelessWidget {
+     @override
+    Widget build(BuildContext context) {
+      final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>? ?? {};
+      // ProfilePageDetailed 위젯을 반환
+      return ProfilePageDetailed();
+    }
+  }
+*/
