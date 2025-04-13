@@ -9,6 +9,7 @@ import 'pages/home_page.dart';
 import 'pages/settings_page.dart';
 import 'pages/splash_page.dart';
 import 'pages/find_idpw.dart';
+import 'pages/chat_page.dart';
 
 void main() {
   runApp(MyApp());
@@ -64,8 +65,8 @@ class _MyAppState extends State<MyApp> {
               '/match': (context) => MatchingPage(),
               '/home': (context) => HomePage(),
               '/settings': (context) => SettingsPage(),
-              '/chat':(context) => ChatPage(),
-              '/find':(context) => FindAccountpage()
+              '/chat': (context) => ChatPage(),
+              '/find': (context) => FindAccountpage(),
             },
           );
         },

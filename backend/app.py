@@ -7,9 +7,17 @@ from routes.auth import auth_bp
 from routes.freetime import freetime_bp
 from routes.chat import chat_bp  # 채팅 블루프린트 추가
 from routes.findidpw import findidpw_bp #idpw찾기 블루프린트 추가
+from flask_socketio import SocketIO
+from flask_cors import CORS
+from routes.chat import init_socket
 
 load_dotenv() # 환경 변수 로드 (.env 파일에서 값을 가져올 수 있도록 설정)
 app = Flask(__name__)
+CORS(app)
+
+# WebSocket 설정
+socketio = SocketIO(app, cors_allowed_origins="*",transports=["websocket"])   
+
 
 # Flask 애플리케이션 설정
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'  # Gmail SMTP 서버
@@ -32,6 +40,13 @@ app.register_blueprint(auth_bp)
 app.register_blueprint(freetime_bp)
 app.register_blueprint(chat_bp)  # 채팅 블루프린트 등록
 app.register_blueprint(findidpw_bp)  # findidpw 블루프린트 등록
+init_socket(socketio)
 
+@socketio.on('connect')
+def test_connect():
+    print("Client connected")
+
+# 서버 실행
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
+    socketio.run(app, debug=True, host='0.0.0.0', port=5000)
