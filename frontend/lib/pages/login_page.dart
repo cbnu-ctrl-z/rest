@@ -65,7 +65,7 @@ class _LoginPageState extends State<LoginPage> {
       return;
     }
 
-    const url = 'http://10.0.2.2:5000/login';
+    const url = 'http://172.30.64.60:5000/login';
     try {
       final response = await http.post(
         Uri.parse(url),

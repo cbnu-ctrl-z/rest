@@ -22,8 +22,8 @@ class _FindAccountScreenState extends State<FindAccountpage> {
     }
 
     String url = isFindID
-        ? 'http://10.0.2.2:5000/find_id' // 아이디 찾기 API
-        : 'http://10.0.2.2:5000/find_pw'; // 비밀번호 찾기 API (추후 구현)
+        ? 'http://172.30.64.60:5000/find_id' // 아이디 찾기 API
+        : 'http://172.30.64.60:5000/find_pw'; // 비밀번호 찾기 API (추후 구현)
 
     try {
             var response = await http.post(
