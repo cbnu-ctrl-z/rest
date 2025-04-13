@@ -78,7 +78,7 @@ class _FreeTimeInputPageState extends State<FreeTimeInputPage> {
     final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>? ?? {};
     final id = args['id'] as String? ?? 'user@example.com'; // Map에서 'id' 값을 추출
 
-    const url = 'http://192.168.219.100:5000/add_freetime';
+    const url = 'http://172.30.64.60:5000/add_freetime';
     try {
       final response = await http.post(
         Uri.parse(url),

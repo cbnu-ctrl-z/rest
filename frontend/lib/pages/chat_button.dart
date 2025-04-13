@@ -22,7 +22,7 @@ class _ChatbuttonState extends State<Chatbutton> {
   }
 
   Future<void> fetchChatRooms() async {
-    final uri = Uri.parse('http://192.168.219.100:5000/chat/rooms?userId=${widget.id}');
+    final uri = Uri.parse('http://172.30.64.60:5000/chat/rooms?userId=${widget.id}');
 
     try {
       final response = await http.get(uri);
