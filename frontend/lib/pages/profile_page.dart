@@ -39,7 +39,7 @@ class _ProfilePageDetailedState extends State<ProfilePageDetailed> {
 
     try {
       final response = await http.get(
-        Uri.parse('http://172.30.73.82:5000/user_profile?id=$userId'),
+        Uri.parse('http://172.30.64.60:5000/user_profile?id=$userId'),
       );
 
       if (response.statusCode == 200) {
@@ -118,7 +118,7 @@ class _ProfilePageDetailedState extends State<ProfilePageDetailed> {
         DelegatingStream.typed(_imageFile!.openRead()),
       );
       var length = await _imageFile!.length();
-      var uri = Uri.parse('http://172.30.73.82:5000/update_profile_image');
+      var uri = Uri.parse('http://172.30.64.60:5000/update_profile_image');
 
       var request = http.MultipartRequest('POST', uri);
       request.fields['id'] = userId!;

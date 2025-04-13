@@ -67,7 +67,7 @@ def update_profile_image():
         return jsonify({'error': f'파일 저장 중 오류 발생: {e}'}), 500
     
     # 서버에서 접근 가능한 URL 생성
-    file_url = f"http://172.30.73.82:5000/uploads/{filename}"
+    file_url = f"http://172.30.64.60:5000/uploads/{filename}"
     
     # 사용자 데이터 업데이트
     try:

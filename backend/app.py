@@ -7,10 +7,11 @@ from routes.auth import auth_bp
 from routes.freetime import freetime_bp
 from routes.chat import chat_bp  # 채팅 블루프린트 추가
 from routes.findidpw import findidpw_bp #idpw찾기 블루프린트 추가
-from routes.profile_api import profile_bp  # 새로운 Blueprint 임포트
+from routes.Profile_api import profile_bp  # 새로운 Blueprint 임포트
 from flask_socketio import SocketIO
 from flask_cors import CORS
 from routes.chat import init_socket
+from flask import send_from_directory
 
 load_dotenv() # 환경 변수 로드 (.env 파일에서 값을 가져올 수 있도록 설정)
 app = Flask(__name__)
