@@ -1,5 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -9,43 +9,81 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _idController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController = TextEditingController();
+  final _nameController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _idController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
+
+  final _nameFocus = FocusNode();
+  final _emailFocus = FocusNode();
+  final _idFocus = FocusNode();
+  final _passwordFocus = FocusNode();
+  final _confirmPasswordFocus = FocusNode();
+
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
 
-  Future<void> _signUp() async {
-    String name = _nameController.text.trim();
-    String email = _emailController.text.trim();
-    String id = _idController.text.trim();
-    String password = _passwordController.text.trim();
-    String confirmPassword = _confirmPasswordController.text.trim();
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _emailController.dispose();
+    _idController.dispose();
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
+    _nameFocus.dispose();
+    _emailFocus.dispose();
+    _idFocus.dispose();
+    _passwordFocus.dispose();
+    _confirmPasswordFocus.dispose();
+    super.dispose();
+  }
 
-    if (name.isEmpty || email.isEmpty || id.isEmpty || password.isEmpty || confirmPassword.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('모든 필드를 입력하세요!')),
-      );
+  void showCustomSnackBar(String message, Color color) {
+    final snackBar = SnackBar(
+      content: Text(message, style: TextStyle(color: Colors.white)),
+      backgroundColor: color,
+      behavior: SnackBarBehavior.floating,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      duration: Duration(seconds: 2),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
+  Future<void> _signUp() async {
+    _nameFocus.unfocus();
+    _emailFocus.unfocus();
+    _idFocus.unfocus();
+    _passwordFocus.unfocus();
+    _confirmPasswordFocus.unfocus();
+
+    final name = _nameController.text.trim();
+    final email = _emailController.text.trim();
+    final id = _idController.text.trim();
+    final password = _passwordController.text.trim();
+    final confirmPassword = _confirmPasswordController.text.trim();
+
+    if (name.isEmpty ||
+        email.isEmpty ||
+        id.isEmpty ||
+        password.isEmpty ||
+        confirmPassword.isEmpty) {
+      showCustomSnackBar('모든 필드를 입력하세요!', Colors.red);
       return;
     }
 
-    if (!RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}\$').hasMatch(email)) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('유효한 이메일을 입력하세요!')),
-      );
+    if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email)) {
+      showCustomSnackBar('유효한 이메일을 입력하세요!', Colors.red);
       return;
     }
 
     if (password != confirmPassword) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('비밀번호가 일치하지 않습니다!')),
-      );
+      showCustomSnackBar('비밀번호가 일치하지 않습니다!', Colors.red);
       return;
     }
 
-    const url = 'http://192.168.219.100:5000/signup';
+    const url = 'http://172.30.64.60:5000/signup';
     try {
       final response = await http.post(
         Uri.parse(url),
@@ -59,145 +97,187 @@ class _SignUpPageState extends State<SignUpPage> {
       );
 
       if (response.statusCode == 201) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('회원가입 성공! 로그인 페이지로 이동합니다.')),
-        );
+        showCustomSnackBar('회원가입 성공! 로그인 페이지로 이동합니다.', Colors.blue);
         Navigator.pushNamed(context, '/login');
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('회원가입 실패: ${response.body}')),
-        );
+        showCustomSnackBar('회원가입 실패: ${response.body}', Colors.red);
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('에러 발생: $e')),
-      );
+      showCustomSnackBar('에러 발생: $e', Colors.red);
     }
+  }
+
+  Widget _buildTextField({
+    required TextEditingController controller,
+    required FocusNode focusNode,
+    required IconData icon,
+    required String label,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: TextField(
+        controller: controller,
+        focusNode: focusNode,
+        decoration: InputDecoration(
+          prefixIcon: Icon(icon, color: Colors.black),
+          labelText: label,
+          border: UnderlineInputBorder(),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPasswordField({
+    required TextEditingController controller,
+    required FocusNode focusNode,
+    required String label,
+    required bool isConfirm,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: TextField(
+        controller: controller,
+        focusNode: focusNode,
+        obscureText: isConfirm ? _obscureConfirmPassword : _obscurePassword,
+        decoration: InputDecoration(
+          prefixIcon: Icon(Icons.lock, color: Colors.black),
+          labelText: label,
+          border: UnderlineInputBorder(),
+          suffixIcon: IconButton(
+            icon: Icon(
+              isConfirm
+                  ? (_obscureConfirmPassword
+                      ? Icons.visibility
+                      : Icons.visibility_off)
+                  : (_obscurePassword
+                      ? Icons.visibility
+                      : Icons.visibility_off),
+            ),
+            onPressed: () {
+              setState(() {
+                if (isConfirm) {
+                  _obscureConfirmPassword = !_obscureConfirmPassword;
+                } else {
+                  _obscurePassword = !_obscurePassword;
+                }
+              });
+            },
+          ),
+        ),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-      ),
-      body: Stack(
-        children: [
-          SingleChildScrollView(
-            child: SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 25),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Image.asset(
-                      'assets/simpo_b.jpg',
-                      width: 80,
-                      height: 80,
-                    ),
-                    Text(
-                      '쉼표',
-                      style: TextStyle(fontSize: 28, color: Colors.black),
-                    ),
-                    SizedBox(height: 7),
-                    Text(
-                      '공강 매칭 앱 쉼표에 오신걸 환영합니다!',
-                      style: TextStyle(fontSize: 14, color: Colors.black54),
-                      textAlign: TextAlign.center,
-                    ),
-                    SizedBox(height: 20),
-                    _buildTextField(_nameController, Icons.person, '이름'),
-                    _buildTextField(_emailController, Icons.email, '이메일'),
-                    _buildTextField(_idController, Icons.account_circle, '아이디'),
-                    _buildPasswordField(_passwordController, '비밀번호', true),
-                    _buildPasswordField(_confirmPasswordController, '비밀번호 확인', false),
-                    SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: _signUp,
-                      style: ElevatedButton.styleFrom(
-                        minimumSize: Size.fromHeight(55),
-                        backgroundColor: Color(0xff36eff4),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                        ),
+      appBar: AppBar(backgroundColor: Colors.white, elevation: 0),
+      body: KeyboardVisibilityBuilder(
+        builder: (context, isKeyboardVisible) {
+          return Column(
+            children: [
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(horizontal: 25),
+                  child: Column(
+                    children: [
+                      SizedBox(height: 20),
+                      Image.asset('assets/simpo_b.jpg', width: 80, height: 80),
+                      Text(
+                        '쉼표',
+                        style: TextStyle(fontSize: 28, color: Colors.black),
                       ),
-                      child: Text(
-                        '회원가입',
-                        style: TextStyle(fontSize: 18, color: Colors.white),
+                      SizedBox(height: 7),
+                      Text(
+                        '공강 매칭 앱 쉼표에 오신걸 환영합니다!',
+                        style: TextStyle(fontSize: 14, color: Colors.black54),
+                        textAlign: TextAlign.center,
                       ),
-                    ),
-                    SizedBox(height: 10),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text('이미 계정이 있으신가요?', style: TextStyle(color: Colors.black54)),
-                        TextButton(
-                          onPressed: () => Navigator.pushNamed(context, '/login'),
-                          child: Text(
-                            '로그인',
-                            style: TextStyle(color: Color(0xff36eff4), fontSize: 16, fontWeight: FontWeight.w600),
+                      SizedBox(height: 20),
+                      _buildTextField(
+                        controller: _nameController,
+                        focusNode: _nameFocus,
+                        icon: Icons.person,
+                        label: '이름',
+                      ),
+                      _buildTextField(
+                        controller: _emailController,
+                        focusNode: _emailFocus,
+                        icon: Icons.email,
+                        label: '이메일',
+                      ),
+                      _buildTextField(
+                        controller: _idController,
+                        focusNode: _idFocus,
+                        icon: Icons.account_circle,
+                        label: '아이디',
+                      ),
+                      _buildPasswordField(
+                        controller: _passwordController,
+                        focusNode: _passwordFocus,
+                        label: '비밀번호',
+                        isConfirm: false,
+                      ),
+                      _buildPasswordField(
+                        controller: _confirmPasswordController,
+                        focusNode: _confirmPasswordFocus,
+                        label: '비밀번호 확인',
+                        isConfirm: true,
+                      ),
+                      SizedBox(height: 20),
+                      ElevatedButton(
+                        onPressed: _signUp,
+                        style: ElevatedButton.styleFrom(
+                          minimumSize: Size.fromHeight(55),
+                          backgroundColor: Color(0xff36eff4),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
                           ),
                         ),
-                      ],
-                    ),
-                  ],
+                        child: Text(
+                          '회원가입',
+                          style: TextStyle(fontSize: 18, color: Colors.white),
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            '이미 계정이 있으신가요?',
+                            style: TextStyle(color: Colors.black54),
+                          ),
+                          TextButton(
+                            onPressed:
+                                () => Navigator.pushNamed(context, '/login'),
+                            child: Text(
+                              '로그인',
+                              style: TextStyle(
+                                color: Color(0xff36eff4),
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 20),
-              child: Text('© 2025 쉼표', style: TextStyle(color: Colors.black54, fontSize: 12)),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildTextField(TextEditingController controller, IconData icon, String hint) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: TextField(
-        controller: controller,
-        decoration: InputDecoration(
-          prefixIcon: Icon(icon, color: Colors.black),
-          labelText: hint,
-          filled: true,
-          fillColor: Colors.transparent,
-          border: UnderlineInputBorder(),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildPasswordField(TextEditingController controller, String hint, bool isPassword) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: TextField(
-        controller: controller,
-        obscureText: isPassword ? _obscurePassword : _obscureConfirmPassword,
-        decoration: InputDecoration(
-          prefixIcon: Icon(Icons.lock, color: Colors.black),
-          labelText: hint,
-          filled: true,
-          fillColor: Colors.transparent,
-          border: UnderlineInputBorder(),
-          suffixIcon: IconButton(
-            icon: Icon(isPassword ? (_obscurePassword ? Icons.visibility : Icons.visibility_off) : (_obscureConfirmPassword ? Icons.visibility : Icons.visibility_off)),
-            onPressed: () {
-              setState(() {
-                if (isPassword) _obscurePassword = !_obscurePassword;
-                else _obscureConfirmPassword = !_obscureConfirmPassword;
-              });
-            },
-          ),
-        ),
+              if (!isKeyboardVisible)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 20),
+                  child: Text(
+                    '© 2025 쉼표',
+                    style: TextStyle(color: Colors.black54, fontSize: 12),
+                  ),
+                ),
+            ],
+          );
+        },
       ),
     );
   }

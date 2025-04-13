@@ -19,7 +19,7 @@ class _MatchingPageState extends State<MatchingPage> {
   }
 
   Future<void> _fetchMatches(String id) async {
-    const url = 'http://192.168.219.100:5000/match_freetime';
+    const url = 'http://172.30.64.60:5000/match_freetime';
     try {
       final response = await http.post(
         Uri.parse(url),
@@ -57,6 +57,7 @@ class _MatchingPageState extends State<MatchingPage> {
             subtitle: Text('${matches[index]['day']} ${matches[index]['start_time']} - ${matches[index]['end_time']}'),
             trailing: Icon(Icons.chat_bubble_outline, color: Colors.blue),
             onTap: () {
+              print('📦 넘기는 값 확인 → senderId: $id, receiverId: ${matches[index]['id']}, name: ${matches[index]['name']}');
               Navigator.pushNamed(
                 context,
                 '/chat',
