@@ -19,7 +19,7 @@ class _MatchingPageState extends State<MatchingPage> {
   }
 
   Future<void> _fetchMatches(String id) async {
-    const url = 'http://172.30.72.140:5000/match_freetime';
+    const url = 'http://172.30.73.82:5000/match_freetime';
     try {
       final response = await http.post(
         Uri.parse(url),

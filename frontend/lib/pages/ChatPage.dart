@@ -29,7 +29,7 @@ class _ChatPageState extends State<ChatPage> {
   Future<void> _fetchMessages() async {
     if (senderId == null || receiverId == null) return;
 
-    final url = Uri.parse('http://172.30.72.140:5000/get_messages?sender=$senderId&receiver=$receiverId');
+    final url = Uri.parse('http://172.30.73.82:5000/get_messages?sender=$senderId&receiver=$receiverId');
     try {
       final response = await http.get(url);
 
