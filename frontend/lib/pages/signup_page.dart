@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -83,7 +84,7 @@ class _SignUpPageState extends State<SignUpPage> {
       return;
     }
 
-    const url = 'http://172.30.64.60:5000/signup';
+    final url = '${dotenv.env['API_URL']}/signup';
     try {
       final response = await http.post(
         Uri.parse(url),

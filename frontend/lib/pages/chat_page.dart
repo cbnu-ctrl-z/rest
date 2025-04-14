@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class ChatPage extends StatefulWidget {
   const ChatPage({Key? key}) : super(key: key);
@@ -36,8 +37,10 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   void _initSocket() {
+    String apiUrl = dotenv.env['API_URL'] ?? 'http://localhost:5000';  // 기본 값 설정
+
     _socket = IO.io(
-      'http://172.30.64.60:5000',
+      apiUrl,
       IO.OptionBuilder()
           .setTransports(['websocket'])
           .disableAutoConnect()

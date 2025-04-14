@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:convert'; // JSON 파싱
 import 'package:http/http.dart' as http; // HTTP 요청
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class FindAccountpage extends StatefulWidget {
   @override
@@ -21,9 +22,10 @@ class _FindAccountScreenState extends State<FindAccountpage> {
       return;
     }
 
+    String apiUrl = dotenv.env['API_URL'] ?? 'http://localhost:5000';
     String url = isFindID
-        ? 'http://172.30.64.60:5000/find_id' // 아이디 찾기 API
-        : 'http://172.30.64.60:5000/find_pw'; // 비밀번호 찾기 API (추후 구현)
+        ? '$apiUrl/find_id'
+        : '$apiUrl/find_pw';
 
     try {
             var response = await http.post(

@@ -16,8 +16,6 @@ dependencies:
   image_picker: ^0.8.7  # 추가
   path: ^1.8.3         # 추가
   async: ^2.10.0       # 추가
-
-
   cupertino_icons: ^1.0.8
   http: ^0.13.6
   provider: ^6.0.0
@@ -25,6 +23,7 @@ dependencies:
   socket_io_client: ^2.0.0
   intl: ^0.18.1
   flutter_keyboard_visibility: ^6.0.0
+  flutter_dotenv: ^5.2.1
 
 dev_dependencies:
   flutter_test:
@@ -37,3 +36,4 @@ flutter:
     # Add this part for assets
   assets:
     - assets/
+    - .env   
