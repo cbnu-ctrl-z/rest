@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'pages/signup_page.dart';
 import 'pages/login_page.dart';
@@ -11,7 +12,11 @@ import 'pages/splash_page.dart';
 import 'pages/find_idpw.dart';
 import 'pages/chat_page.dart';
 
-void main() {
+
+
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: ".env");
   runApp(MyApp());
 }
 

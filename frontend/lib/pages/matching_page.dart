@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'dart:convert';
 
 class MatchingPage extends StatefulWidget {
@@ -19,7 +20,8 @@ class _MatchingPageState extends State<MatchingPage> {
   }
 
   Future<void> _fetchMatches(String id) async {
-    const url = 'http://172.30.64.60:5000/match_freetime';
+    final baseUrl = dotenv.env['API_URL'];
+    final url = '$baseUrl/match_freetime';
     try {
       final response = await http.post(
         Uri.parse(url),

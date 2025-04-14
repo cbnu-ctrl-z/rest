@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'dart:convert';
 
 class Chatbutton extends StatefulWidget {
@@ -22,7 +23,8 @@ class _ChatbuttonState extends State<Chatbutton> {
   }
 
   Future<void> fetchChatRooms() async {
-    final uri = Uri.parse('http://172.30.64.60:5000/chat/rooms?userId=${widget.id}');
+    final url = dotenv.env['API_URL'];
+    final uri = Uri.parse('$url/chat/rooms?userId=${widget.id}');
 
     try {
       final response = await http.get(uri);
@@ -47,7 +49,7 @@ class _ChatbuttonState extends State<Chatbutton> {
   String formatKSTTime(String utcTimeStr) {
     try {
       final utcTime = DateTime.parse(utcTimeStr);
-      final kstTime = utcTime.add(Duration(hours: 9)); // UTC + 9시간 = KST
+      final kstTime = utcTime.add(Duration(hours: 9));
       return DateFormat('yyyy-MM-dd HH:mm').format(kstTime);
     } catch (e) {
       return '시간 오류';
@@ -79,7 +81,7 @@ class _ChatbuttonState extends State<Chatbutton> {
               'receiverId': room['otherUserId'],
               'name': room['otherUserName'],
             }).then((_) {
-              fetchChatRooms(); // 채팅방에서 돌아오면 새로고침
+              fetchChatRooms();
             });
           },
         );

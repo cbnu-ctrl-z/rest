@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:convert';
 import 'package:path/path.dart' as path_package;
@@ -38,8 +39,9 @@ class _ProfilePageDetailedState extends State<ProfilePageDetailed> {
     });
 
     try {
+      final baseUrl = dotenv.env['API_URL'];
       final response = await http.get(
-        Uri.parse('http://172.30.64.60:5000/user_profile?id=$userId'),
+        Uri.parse('$baseUrl/user_profile?id=$userId'),
       );
 
       if (response.statusCode == 200) {
@@ -110,15 +112,13 @@ class _ProfilePageDetailedState extends State<ProfilePageDetailed> {
     });
 
     try {
-      print("업로드 시작 - 사용자 ID: $userId");
-      print("이미지 경로: ${_imageFile!.path}");
+      final baseUrl = dotenv.env['API_URL'];
+      var uri = Uri.parse('$baseUrl/update_profile_image');
 
-      // 파일과 요청을 생성
       var stream = http.ByteStream(
         DelegatingStream.typed(_imageFile!.openRead()),
       );
       var length = await _imageFile!.length();
-      var uri = Uri.parse('http://172.30.64.60:5000/update_profile_image');
 
       var request = http.MultipartRequest('POST', uri);
       request.fields['id'] = userId!;
@@ -132,15 +132,10 @@ class _ProfilePageDetailedState extends State<ProfilePageDetailed> {
 
       request.files.add(multipartFile);
 
-      print("요청 전송 중...");
       var response = await request.send();
-      print("서버 응답 코드: ${response.statusCode}");
-
       var responseBody = await response.stream.bytesToString();
-      print("서버 응답 내용: $responseBody");
 
       if (response.statusCode == 200) {
-        // 응답 데이터 파싱
         final respData = jsonDecode(responseBody);
 
         setState(() {
@@ -160,7 +155,6 @@ class _ProfilePageDetailedState extends State<ProfilePageDetailed> {
         );
       }
     } catch (e) {
-      print("업로드 오류 발생: $e");
       setState(() {
         isLoading = false;
       });

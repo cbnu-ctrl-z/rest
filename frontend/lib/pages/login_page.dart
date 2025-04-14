@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'dart:convert';
 
 const String iconFont = CupertinoIcons.iconFont;
@@ -65,7 +66,7 @@ class _LoginPageState extends State<LoginPage> {
       return;
     }
 
-    const url = 'http://172.30.64.60:5000/login';
+    final url = '${dotenv.env['API_URL']}/login';
     try {
       final response = await http.post(
         Uri.parse(url),
