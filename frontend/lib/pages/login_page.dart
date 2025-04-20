@@ -1,11 +1,23 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+<<<<<<< HEAD
+=======
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+>>>>>>> 7c1421b64e7d9f1c44977e7a459622126eb41e50
 import 'dart:convert';
 
 const String iconFont = CupertinoIcons.iconFont;
 const String iconFontPackage = CupertinoIcons.iconFontPackage;
+<<<<<<< HEAD
 const IconData lock = IconData(0xf4c8, fontFamily: iconFont, fontPackage: iconFontPackage);
+=======
+const IconData lock = IconData(
+  0xf4c8,
+  fontFamily: iconFont,
+  fontPackage: iconFontPackage,
+);
+>>>>>>> 7c1421b64e7d9f1c44977e7a459622126eb41e50
 
 class LoginPage extends StatefulWidget {
   @override
@@ -17,6 +29,10 @@ class _LoginPageState extends State<LoginPage> {
   late final TextEditingController _passwordController;
   late final FocusNode _idFocusNode;
   late final FocusNode _passwordFocusNode;
+<<<<<<< HEAD
+=======
+  bool _obscureText = true;
+>>>>>>> 7c1421b64e7d9f1c44977e7a459622126eb41e50
 
   @override
   void initState() {
@@ -60,16 +76,24 @@ class _LoginPageState extends State<LoginPage> {
       return;
     }
 
+<<<<<<< HEAD
     const url = 'http://10.0.2.2:5001/login'; // 에뮬레이터 사용 시
 
+=======
+    final url = '${dotenv.env['API_URL']}/login';
+>>>>>>> 7c1421b64e7d9f1c44977e7a459622126eb41e50
     try {
       final response = await http.post(
         Uri.parse(url),
         headers: {'Content-Type': 'application/json'},
+<<<<<<< HEAD
         body: jsonEncode({
           'id': id,
           'password': password,
         }),
+=======
+        body: jsonEncode({'id': id, 'password': password}),
+>>>>>>> 7c1421b64e7d9f1c44977e7a459622126eb41e50
       );
 
       if (response.statusCode == 200) {
@@ -78,7 +102,15 @@ class _LoginPageState extends State<LoginPage> {
         showCustomSnackBar('로그인 성공! 홈 화면으로 이동합니다.', Colors.blue);
         _idController.clear();
         _passwordController.clear();
+<<<<<<< HEAD
         Navigator.pushNamed(context, '/home', arguments: {'id': id, 'name': name});
+=======
+        Navigator.pushNamed(
+          context,
+          '/home',
+          arguments: {'id': id, 'name': name},
+        );
+>>>>>>> 7c1421b64e7d9f1c44977e7a459622126eb41e50
       } else {
         String errorMessage = '아이디 또는 비밀번호가 올바르지 않습니다.';
         try {
@@ -96,17 +128,24 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
+<<<<<<< HEAD
   bool _obscureText = true;
 
+=======
+>>>>>>> 7c1421b64e7d9f1c44977e7a459622126eb41e50
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: Colors.white,
+<<<<<<< HEAD
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
       ),
+=======
+      appBar: AppBar(backgroundColor: Colors.white, elevation: 0),
+>>>>>>> 7c1421b64e7d9f1c44977e7a459622126eb41e50
       body: Stack(
         children: [
           SingleChildScrollView(
@@ -125,18 +164,26 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                         Text(
                           '쉼표',
+<<<<<<< HEAD
                           style: TextStyle(
                             fontSize: 28,
                             color: Colors.black,
                           ),
+=======
+                          style: TextStyle(fontSize: 28, color: Colors.black),
+>>>>>>> 7c1421b64e7d9f1c44977e7a459622126eb41e50
                         ),
                         SizedBox(height: 7),
                         Text(
                           '공강 매칭 앱 쉼표에 오신걸 환영합니다!',
+<<<<<<< HEAD
                           style: TextStyle(
                             fontSize: 14,
                             color: Colors.black54,
                           ),
+=======
+                          style: TextStyle(fontSize: 14, color: Colors.black54),
+>>>>>>> 7c1421b64e7d9f1c44977e7a459622126eb41e50
                           textAlign: TextAlign.center,
                         ),
                         SizedBox(height: 20),
@@ -174,7 +221,15 @@ class _LoginPageState extends State<LoginPage> {
                             border: UnderlineInputBorder(),
                             prefixIcon: Icon(Icons.lock),
                             suffixIcon: IconButton(
+<<<<<<< HEAD
                               icon: Icon(_obscureText ? Icons.visibility : Icons.visibility_off),
+=======
+                              icon: Icon(
+                                _obscureText
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
+                              ),
+>>>>>>> 7c1421b64e7d9f1c44977e7a459622126eb41e50
                               onPressed: () {
                                 setState(() {
                                   _obscureText = !_obscureText;
@@ -206,9 +261,21 @@ class _LoginPageState extends State<LoginPage> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
+<<<<<<< HEAD
                             Text('계정이 없으신가요?', style: TextStyle(color: const Color.fromARGB(255, 155, 150, 150))),
                             TextButton(
                               onPressed: () => Navigator.pushNamed(context, '/signup'),
+=======
+                            Text(
+                              '계정이 없으신가요?',
+                              style: TextStyle(
+                                color: const Color.fromARGB(255, 155, 150, 150),
+                              ),
+                            ),
+                            TextButton(
+                              onPressed:
+                                  () => Navigator.pushNamed(context, '/signup'),
+>>>>>>> 7c1421b64e7d9f1c44977e7a459622126eb41e50
                               child: Text(
                                 '회원가입',
                                 style: TextStyle(
@@ -220,6 +287,26 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                           ],
                         ),
+<<<<<<< HEAD
+=======
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            TextButton(
+                              onPressed:
+                                  () => Navigator.pushNamed(context, '/find'),
+                              child: Text(
+                                'ID/PW 찾기',
+                                style: TextStyle(
+                                  color: Color(0xff36eff4),
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+>>>>>>> 7c1421b64e7d9f1c44977e7a459622126eb41e50
                       ],
                     ),
                   ),

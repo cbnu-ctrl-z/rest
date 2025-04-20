@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+<<<<<<< HEAD
+=======
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+>>>>>>> 7c1421b64e7d9f1c44977e7a459622126eb41e50
 import 'package:shared_preferences/shared_preferences.dart';
 import 'pages/signup_page.dart';
 import 'pages/login_page.dart';
@@ -8,10 +12,21 @@ import 'pages/matching_page.dart';
 import 'pages/home_page.dart';
 import 'pages/settings_page.dart';
 import 'pages/splash_page.dart';
+<<<<<<< HEAD
 
 
 
 void main() {
+=======
+import 'pages/find_idpw.dart';
+import 'pages/chat_page.dart';
+
+
+
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: ".env");
+>>>>>>> 7c1421b64e7d9f1c44977e7a459622126eb41e50
   runApp(MyApp());
 }
 
@@ -65,11 +80,20 @@ class _MyAppState extends State<MyApp> {
               '/match': (context) => MatchingPage(),
               '/home': (context) => HomePage(),
               '/settings': (context) => SettingsPage(),
+<<<<<<< HEAD
               '/chat':(context) => ChatPage()
+=======
+              '/chat': (context) => ChatPage(),
+              '/find': (context) => FindAccountpage(),
+>>>>>>> 7c1421b64e7d9f1c44977e7a459622126eb41e50
             },
           );
         },
       ),
     );
   }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 7c1421b64e7d9f1c44977e7a459622126eb41e50

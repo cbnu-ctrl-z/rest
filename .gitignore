@@ -1,0 +1,58 @@
+# Miscellaneous
+*.class
+*.log
+*.pyc
+*.swp
+.DS_Store
+.atom/
+bulid/
+frontend/build/
+.buildlog/
+.history
+.svn/
+.swiftpm/
+migrate_working_dir/
+
+# IntelliJ related
+*.iml
+*.ipr
+*.iws
+.idea/
+
+
+# Flutter/Dart/Pub related
+**/doc/api/
+**/ios/Flutter/.last_build_id
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.pub-cache/
+.pub/
+/build/
+
+# Symbolication related
+app.*.symbols
+
+# Obfuscation related
+app.*.map.json
+
+# Android Studio will place build artifacts here
+/android/app/debug
+/android/app/profile
+/android/app/release
+
+# Flutter generated files
+.generated/
+**/generated_plugin_registry.*    # 플러그인 관련 자동 생성 파일들
+**/*.cc                            # C++ 관련 파일들
+**/*.swift                         # Swift 관련 파일들
+
+# Flutter build directory
+/build/
+
+# Ignore Python bytecode files
+*.pyc
+__pycache__/
+
+# 환경 변수 파일 (API 키 포함 가능성)
+.env
