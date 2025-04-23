@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'chat_button.dart'; // Chatbutton이 있는 파일
 import 'profile_page.dart'; // 추가한 프로필 페이지 import
+import 'mentor_board_page.dart';
+import 'mentee_board_page.dart';
 // 필요 시 다른 import 추가
 
 class HomePage extends StatefulWidget {
@@ -84,9 +86,72 @@ class HomeTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(child: Text('환영합니다, $name님!'));
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('환영합니다, $name님!', style: TextStyle(fontSize: 20)),
+            SizedBox(height: 20),
+            _buildBoardPreview(
+              context,
+              title: '멘토 게시판',
+              onViewAll: () {
+                Navigator.pushNamed(context, '/mentorBoard', arguments: {'id': id,'name':name});
+              },
+              posts: ['멘토1: C언어 도와드려요', '멘토2: 자료구조 설명 가능'],
+            ),
+            SizedBox(height: 20),
+            _buildBoardPreview(
+              context,
+              title: '멘티 게시판',
+              onViewAll: () {
+                Navigator.pushNamed(context, '/menteeBoard', arguments: {'id': id,'name':name});
+              },
+              posts: ['멘티1: 파이썬 질문 있어요', '멘티2: 웹 개발 배우고 싶어요'],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// 🔧 게시판 미리보기 위젯
+  Widget _buildBoardPreview(
+      BuildContext context, {
+        required String title,
+        required VoidCallback onViewAll,
+        required List<String> posts,
+      }) {
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(title, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                TextButton(onPressed: onViewAll, child: Text('전체보기')),
+              ],
+            ),
+            Divider(),
+            ...posts.map((post) => Padding(
+              padding: const EdgeInsets.symmetric(vertical: 4.0),
+              child: Text('• $post'),
+            )),
+          ],
+        ),
+      ),
+    );
   }
 }
+
+
 
 class FreeTimePage extends StatelessWidget {
   @override

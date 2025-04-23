@@ -84,3 +84,24 @@ def update_profile_image():
         'message': '프로필 이미지가 업데이트되었습니다',
         'profile_image_url': file_url
     }), 200
+    
+    
+@profile_bp.route('/update_language', methods=['POST'])
+def update_language():
+    data = request.get_json()
+    user_id = data.get('id')
+    language = data.get('language')
+
+    if not user_id or not language:
+        return jsonify({'error': 'ID와 언어가 필요합니다'}), 400
+
+    users_collection = current_app.db['users']
+    result = users_collection.update_one(
+        {'id': user_id},
+        {'$set': {'language': language}}
+    )
+
+    if result.matched_count == 0:
+        return jsonify({'error': '사용자를 찾을 수 없습니다'}), 404
+
+    return jsonify({'message': '언어가 업데이트되었습니다'}), 200

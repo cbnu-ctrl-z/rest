@@ -24,6 +24,17 @@ class _SignUpPageState extends State<SignUpPage> {
 
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
+  final Map<String, String> languageDisplayToValue = {
+    '한국어': 'Korean',
+    'English': 'English',
+  };
+
+  final Map<String, String> languageValueToDisplay = {
+    'Korean': '한국어',
+    'English': 'English',
+  };
+
+  String _selectedLanguageDisplay = '한국어';
 
   @override
   void dispose() {
@@ -86,15 +97,18 @@ class _SignUpPageState extends State<SignUpPage> {
 
     final url = '${dotenv.env['API_URL']}/signup';
     try {
+      final languageValue = languageDisplayToValue[_selectedLanguageDisplay] ?? 'Korean';
       final response = await http.post(
         Uri.parse(url),
         headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
-          'name': name,
-          'email': email,
-          'id': id,
-          'password': password,
-        }),
+
+      body: jsonEncode({
+      'name': name,
+      'email': email,
+      'id': id,
+      'password': password,
+      'language': languageValue,
+      }),
       );
 
       if (response.statusCode == 201) {
@@ -169,6 +183,33 @@ class _SignUpPageState extends State<SignUpPage> {
     );
   }
 
+  Widget _buildLanguageDropdown() {
+    final List<String> _languageDisplayList = ['한국어', 'English'];
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: DropdownButtonFormField<String>(
+        value: _selectedLanguageDisplay,
+        items: _languageDisplayList
+            .map((lang) => DropdownMenuItem(value: lang, child: Text(lang)))
+            .toList(),
+        onChanged: (value) {
+          setState(() {
+            _selectedLanguageDisplay = value!;
+          });
+        },
+        decoration: InputDecoration(
+          prefixIcon: Icon(Icons.language, color: Colors.black),
+          labelText: '언어 설정',
+          border: UnderlineInputBorder(),
+        ),
+      ),
+    );
+  }
+
+
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -197,6 +238,8 @@ class _SignUpPageState extends State<SignUpPage> {
                         textAlign: TextAlign.center,
                       ),
                       SizedBox(height: 20),
+                      _buildLanguageDropdown(),
+
                       _buildTextField(
                         controller: _nameController,
                         focusNode: _nameFocus,
@@ -215,6 +258,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         icon: Icons.account_circle,
                         label: '아이디',
                       ),
+
                       _buildPasswordField(
                         controller: _passwordController,
                         focusNode: _passwordFocus,
