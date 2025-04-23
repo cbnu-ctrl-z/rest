@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask,request
 from pymongo import MongoClient
 <<<<<<< HEAD
 from routes.auth import auth_bp
@@ -12,15 +12,17 @@ CORS(app)
 from flask_mail import Mail
 from dotenv import load_dotenv  # .env 파일에서 환경 변수 로드하기
 import os  # 환경 변수를 다루기 위한 os 모듈
+from flask_socketio import SocketIO
+from flask_cors import CORS
+from flask import send_from_directory
 from routes.auth import auth_bp
 from routes.freetime import freetime_bp
 from routes.chat import chat_bp  # 채팅 블루프린트 추가
 from routes.findidpw import findidpw_bp #idpw찾기 블루프린트 추가
 from routes.Profile_api import profile_bp  # 새로운 Blueprint 임포트
-from flask_socketio import SocketIO
-from flask_cors import CORS
 from routes.chat import init_socket
-from flask import send_from_directory
+from routes.board import board_bp
+
 
 load_dotenv() # 환경 변수 로드 (.env 파일에서 값을 가져올 수 있도록 설정)
 app = Flask(__name__)
@@ -58,6 +60,7 @@ if __name__ == '__main__':
 =======
 app.register_blueprint(findidpw_bp)  # findidpw 블루프린트 등록
 app.register_blueprint(profile_bp)  # 새로운 Blueprint 등록
+app.register_blueprint(board_bp)
 init_socket(socketio)
 
 @socketio.on('connect')
@@ -73,6 +76,11 @@ if not os.path.exists(UPLOAD_FOLDER):
 @app.route('/uploads/<path:filename>')
 def uploaded_file(filename):
     return send_from_directory(UPLOAD_FOLDER, filename)
+
+@app.before_request
+def attach_app_to_request():
+    request.environ['app'] = app
+
 
 # 서버 실행
 if __name__ == '__main__':

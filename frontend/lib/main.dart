@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-<<<<<<< HEAD
-=======
 import 'package:flutter_dotenv/flutter_dotenv.dart';
->>>>>>> 7c1421b64e7d9f1c44977e7a459622126eb41e50
 import 'package:shared_preferences/shared_preferences.dart';
 import 'pages/signup_page.dart';
 import 'pages/login_page.dart';
@@ -12,21 +9,19 @@ import 'pages/matching_page.dart';
 import 'pages/home_page.dart';
 import 'pages/settings_page.dart';
 import 'pages/splash_page.dart';
-<<<<<<< HEAD
-
-
-
-void main() {
-=======
 import 'pages/find_idpw.dart';
 import 'pages/chat_page.dart';
-
+import 'pages/mentor_board_page.dart';
+import 'pages/mentee_board_page.dart';
+import 'pages/mentor_write_page.dart';
+import 'pages/mentee_write_page.dart';
+import 'pages/mentee_post_detail_page.dart';
+import 'pages/mentor_post_detail_page.dart';
 
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: ".env");
->>>>>>> 7c1421b64e7d9f1c44977e7a459622126eb41e50
   runApp(MyApp());
 }
 
@@ -80,20 +75,18 @@ class _MyAppState extends State<MyApp> {
               '/match': (context) => MatchingPage(),
               '/home': (context) => HomePage(),
               '/settings': (context) => SettingsPage(),
-<<<<<<< HEAD
-              '/chat':(context) => ChatPage()
-=======
               '/chat': (context) => ChatPage(),
               '/find': (context) => FindAccountpage(),
->>>>>>> 7c1421b64e7d9f1c44977e7a459622126eb41e50
+              '/mentorBoard': (context) => MentorBoardPage(), // 🔹 추가
+              '/menteeBoard': (context) => MenteeBoardPage(), // 🔹 추가
+              '/mentorWrite': (context) => MentorWritePage(),   // 🔹 추가
+              '/menteeWrite': (context) => MenteeWritePage(),   // 🔹 추가
+              '/mentee_post_detail': (context) => MenteePostDetailPage(),
+              '/mentor_post_detail': (context) => MentorPostDetailPage(),
             },
           );
         },
       ),
     );
   }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 7c1421b64e7d9f1c44977e7a459622126eb41e50

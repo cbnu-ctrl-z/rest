@@ -48,8 +48,4 @@ class _SettingsPageState extends State<SettingsPage> {
       ),
     );
   }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 7c1421b64e7d9f1c44977e7a459622126eb41e50

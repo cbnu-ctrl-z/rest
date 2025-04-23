@@ -21,6 +21,9 @@ class _ProfilePageDetailedState extends State<ProfilePageDetailed> {
   String? profileImageUrl;
   bool isLoading = true;
 
+  String selectedLanguage = '한국어'; // 기본값
+  final List<String> languages = ['한국어', 'English'];
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -164,6 +167,37 @@ class _ProfilePageDetailedState extends State<ProfilePageDetailed> {
     }
   }
 
+  // Flutter 코드에서 한국어/English를 -> Korean/English로 매핑해서 서버로 전송하도록 수정
+  Future<void> _updateLanguagePreference(String userId, String language) async {
+    // 매핑 딕셔너리
+    final languageMap = {
+      '한국어': 'Korean',
+      'English': 'English',
+    };
+
+    final mappedLanguage = languageMap[language] ?? 'Korean'; // 기본값 Korean
+
+    final baseUrl = dotenv.env['API_URL'];
+    final response = await http.post(
+      Uri.parse('$baseUrl/update_language'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'id': userId,
+        'language': mappedLanguage, // 매핑된 언어 전송
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('언어 설정이 업데이트되었습니다.')),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('언어 설정 실패: ${response.body}')),
+      );
+    }
+  }
+
   void _showImageSourceActionSheet() {
     showModalBottomSheet(
       context: context,
@@ -274,6 +308,27 @@ class _ProfilePageDetailedState extends State<ProfilePageDetailed> {
                       arguments: {'id': userId},
                     );
                   },
+                ),
+                Divider(),
+                     // 언어 설정 추가 부분
+                ListTile(
+                  leading: Icon(Icons.language),
+                  title: Text('언어 설정'),
+                  trailing: DropdownButton<String>(
+                    value: selectedLanguage,
+                    items: languages.map((lang) {
+                      return DropdownMenuItem<String>(
+                        value: lang,
+                        child: Text(lang),
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+    setState(() {
+    selectedLanguage = value!;
+    _updateLanguagePreference(userId!, selectedLanguage);
+    });
+    },
+                  ),
                 ),
               ],
             ),
