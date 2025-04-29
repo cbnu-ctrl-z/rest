@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-<<<<<<< HEAD
-=======
 import 'package:flutter_dotenv/flutter_dotenv.dart';
->>>>>>> 7c1421b64e7d9f1c44977e7a459622126eb41e50
 import 'dart:convert';
 
 class FreeTimeInputPage extends StatefulWidget {
@@ -82,11 +79,7 @@ class _FreeTimeInputPageState extends State<FreeTimeInputPage> {
     final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>? ?? {};
     final id = args['id'] as String? ?? 'user@example.com'; // Map에서 'id' 값을 추출
 
-<<<<<<< HEAD
-    const url = 'http://10.0.2.2:5001/add_freetime';
-=======
     final url = '${dotenv.env['API_URL']}/add_freetime';
->>>>>>> 7c1421b64e7d9f1c44977e7a459622126eb41e50
     try {
       final response = await http.post(
         Uri.parse(url),
@@ -183,8 +176,4 @@ class _FreeTimeInputPageState extends State<FreeTimeInputPage> {
       ),
     );
   }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 7c1421b64e7d9f1c44977e7a459622126eb41e50

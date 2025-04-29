@@ -1,14 +1,5 @@
 from flask import Flask,request
 from pymongo import MongoClient
-<<<<<<< HEAD
-from routes.auth import auth_bp
-from routes.freetime import freetime_bp
-from routes.chat import chat_bp  # 채팅 블루프린트 추가
-from flask_cors import CORS
-app = Flask(__name__)
-CORS(app)
-
-=======
 from flask_mail import Mail
 from dotenv import load_dotenv  # .env 파일에서 환경 변수 로드하기
 import os  # 환경 변수를 다루기 위한 os 모듈
@@ -43,7 +34,6 @@ app.config['MAIL_DEFAULT_SENDER'] = 'simpyo2025@gmail.com'  # 기본 발신자
 
 # Flask-Mail 인스턴스 생성
 mail = Mail(app)
->>>>>>> 7c1421b64e7d9f1c44977e7a459622126eb41e50
 
 # MongoDB 연결
 client = MongoClient('mongodb://localhost:27017/')
@@ -53,11 +43,6 @@ app.db = client['signup_db']
 app.register_blueprint(auth_bp)
 app.register_blueprint(freetime_bp)
 app.register_blueprint(chat_bp)  # 채팅 블루프린트 등록
-<<<<<<< HEAD
-
-if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5001)
-=======
 app.register_blueprint(findidpw_bp)  # findidpw 블루프린트 등록
 app.register_blueprint(profile_bp)  # 새로운 Blueprint 등록
 app.register_blueprint(board_bp)
@@ -85,4 +70,3 @@ def attach_app_to_request():
 # 서버 실행
 if __name__ == '__main__':
     socketio.run(app, debug=True, host='0.0.0.0', port=5000)
->>>>>>> 7c1421b64e7d9f1c44977e7a459622126eb41e50
