@@ -17,15 +17,16 @@ import 'pages/mentor_write_page.dart';
 import 'pages/mentee_write_page.dart';
 import 'pages/mentee_post_detail_page.dart';
 import 'pages/mentor_post_detail_page.dart';
+import 'pages/project_page.dart';
 
 
 void main() async{
-  WidgetsFlutterBinding.ensureInitialized();
-  await dotenv.load(fileName: ".env");
+  WidgetsFlutterBinding.ensureInitialized(); //flutter 엔진 및 위젯트리 연결
+  await dotenv.load(fileName: ".env");//환경변수 등록
   runApp(MyApp());
 }
 
-class ThemeNotifier with ChangeNotifier {
+class ThemeNotifier with ChangeNotifier { //앱의 테마를 관리하는 클래스
   Brightness _brightness = Brightness.light;
 
   Brightness get brightness => _brightness;
@@ -41,24 +42,24 @@ class MyApp extends StatefulWidget {
   _MyAppState createState() => _MyAppState();
 }
 
-class _MyAppState extends State<MyApp> {
-  @override
-  void initState() {
-    super.initState();
-    _goToLoginPage();
-  }
+  class _MyAppState extends State<MyApp> {
+    @override
+    void initState() {
+      super.initState();
+      _goToLoginPage();
+    }
 
   // 스플래시 화면 후 회원가입 화면으로 이동하는 함수
   Future<void> _goToLoginPage() async {
     await Future.delayed(Duration(seconds: 2)); // 스플래시 화면 표시 시간 (2초)
-    Navigator.pushReplacementNamed(context, '/signup'); // 로그인 화면으로 이동
+    Navigator.pushReplacementNamed(context, '/signup'); // 회원가입 화면으로 이동
   }
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => ThemeNotifier(),
-      child: Consumer<ThemeNotifier>(
+      create: (_) => ThemeNotifier(), //테마조정 인스턴스 생성
+      child: Consumer<ThemeNotifier>( //ThemeNotifier가 바뀔때마다 하위 위젯 테마 변경
         builder: (context, themeNotifier, child) {
           return MaterialApp(
             title: '공강 매칭 앱',
@@ -83,6 +84,7 @@ class _MyAppState extends State<MyApp> {
               '/menteeWrite': (context) => MenteeWritePage(),   // 🔹 추가
               '/mentee_post_detail': (context) => MenteePostDetailPage(),
               '/mentor_post_detail': (context) => MentorPostDetailPage(),
+              '/project' : (context) => ProjectPage(),
             },
           );
         },

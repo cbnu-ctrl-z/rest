@@ -25,7 +25,7 @@ class _SplashPageState extends State<SplashPage> {
       });
     });
     Timer(Duration(seconds: 2), () {
-      Navigator.pushReplacementNamed(context, '/signup');
+      Navigator.pushReplacementNamed(context, '/signup');//회원가입 페이지로 두번 이동?
     });
   }
 
@@ -44,7 +44,7 @@ class _SplashPageState extends State<SplashPage> {
               opacity: opacity,
               duration: Duration(seconds: 1),
               child: Image.asset(
-                "assets/simpo_w.jpg",
+                "assets/logo.jpg",
                 width:100,
                 height:100,
               )

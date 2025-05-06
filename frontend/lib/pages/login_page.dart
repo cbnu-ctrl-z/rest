@@ -120,7 +120,7 @@ class _LoginPageState extends State<LoginPage> {
                     child: Column(
                       children: [
                         Image.asset(
-                          'assets/simpo_b.jpg',
+                          'assets/logo.jpg',
                           width: 80,
                           height: 80,
                         ),
