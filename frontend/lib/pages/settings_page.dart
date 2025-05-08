@@ -9,7 +9,7 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
   void _toggleDarkMode(bool value) {
-    final themeNotifier = Provider.of<ThemeNotifier>(context, listen: false);
+    final themeNotifier = Provider.of<ThemeNotifier>(context, listen: false); //테마 확인(listen)할 필요없이 값만 변경
     themeNotifier.setTheme(value ? Brightness.dark : Brightness.light);
   }
 
@@ -35,7 +35,7 @@ class _SettingsPageState extends State<SettingsPage> {
             SizedBox(height: 20),
             SwitchListTile(
               title: Text('다크 모드'),
-              value: themeNotifier.brightness == Brightness.dark,
+              value: themeNotifier.brightness == Brightness.dark, //스위치 상태 확인
               onChanged: _toggleDarkMode,
             ),
             SizedBox(height: 20),

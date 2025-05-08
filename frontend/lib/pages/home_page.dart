@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'project_page.dart';
 import 'chat_button.dart'; // Chatbutton이 있는 파일
 import 'profile_page.dart'; // 추가한 프로필 페이지 import
 import 'mentor_board_page.dart';
@@ -20,7 +21,7 @@ class _HomePageState extends State<HomePage> {
     final id = args['id'] as String? ?? 'user@example.com';
 
     if (index == 1) {
-      Navigator.pushNamed(context, '/freetime', arguments: {'id': id});
+      Navigator.pushNamed(context, '/project', arguments: {'id': id});
     } else {
       setState(() {
         _selectedIndex = index;
@@ -62,12 +63,18 @@ class _HomePageState extends State<HomePage> {
         onTap: _onItemTapped,
         type: BottomNavigationBarType.fixed,
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: '홈'),
           BottomNavigationBarItem(
-            icon: Icon(Icons.access_time),
-            label: '공강 등록',
+            icon: Icon(Icons.home), 
+            label: '홈'
           ),
-          BottomNavigationBarItem(icon: Icon(Icons.chat), label: '채팅'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.article),
+            label: '프로젝트',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.chat), 
+            label: '채팅'
+          ),
           BottomNavigationBarItem(
             icon: Icon(Icons.account_circle),
             label: '프로필',
@@ -174,5 +181,3 @@ class ProfilePage extends StatelessWidget {
     return ProfilePageDetailed();
   }
 }
-
-
