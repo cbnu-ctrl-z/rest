@@ -18,6 +18,7 @@ import 'pages/mentee_write_page.dart';
 import 'pages/mentee_post_detail_page.dart';
 import 'pages/mentor_post_detail_page.dart';
 import 'pages/project_page.dart';
+import 'pages/project_detail.dart';
 
 
 void main() async{
@@ -85,6 +86,7 @@ class MyApp extends StatefulWidget {
               '/mentee_post_detail': (context) => MenteePostDetailPage(),
               '/mentor_post_detail': (context) => MentorPostDetailPage(),
               '/project' : (context) => ProjectPage(),
+              '/project_detail': (context) => ProjectDetailPage(),
             },
           );
         },
