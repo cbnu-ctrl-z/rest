@@ -40,16 +40,19 @@ class _MentorPostDetailPageState extends State<MentorPostDetailPage> {
       appBar: AppBar(
         title: Text(title),
         actions: [
+          // MenteePostDetailPage.dart 수정 부분
           IconButton(
             icon: Icon(Icons.chat),
             onPressed: () {
-              // 채팅 화면으로 이동
+              // 채팅 화면으로 - 게시글 정보도 함께 전달
               print("채팅 이동 인자: roomId=$postId, id=$userId, receiverId=$writer, name=$writerName");
               Navigator.pushNamed(context, '/chat', arguments: {
                 'roomId': postId,
                 'id': userId,
                 'receiverId': writer,
                 'name': writerName,
+                'postTitle': title,    // 게시글 제목 추가
+                'postContent': content, // 게시글 내용 추가
               });
             },
           ),

@@ -17,6 +17,7 @@ import 'pages/mentor_write_page.dart';
 import 'pages/mentee_write_page.dart';
 import 'pages/mentee_post_detail_page.dart';
 import 'pages/mentor_post_detail_page.dart';
+import 'pages/project_detail.dart';
 
 
 void main() async{
@@ -83,6 +84,7 @@ class _MyAppState extends State<MyApp> {
               '/menteeWrite': (context) => MenteeWritePage(),   // 🔹 추가
               '/mentee_post_detail': (context) => MenteePostDetailPage(),
               '/mentor_post_detail': (context) => MentorPostDetailPage(),
+              '/project_detail': (context) => ProjectDetailPage(),
             },
           );
         },
