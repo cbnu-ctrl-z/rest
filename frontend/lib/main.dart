@@ -51,7 +51,7 @@ class MyApp extends StatefulWidget {
     }
 
   // 스플래시 화면 후 회원가입 화면으로 이동하는 함수
-  Future<void> _goToLoginPage() async {
+  Future<void> _goToLoginPage() async {//해당 함수 안 쓰는거 같은데
     await Future.delayed(Duration(seconds: 2)); // 스플래시 화면 표시 시간 (2초)
     Navigator.pushReplacementNamed(context, '/signup'); // 회원가입 화면으로 이동
   }
