@@ -1,0 +1,40 @@
+name: simpo
+description: "A new Flutter project."
+
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.7.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  image_picker: ^0.8.7
+  path: ^1.8.3
+  async: ^2.10.0
+  cupertino_icons: ^1.0.8
+  http: ^0.13.6
+  provider: ^6.0.0
+  shared_preferences: ^2.0.0
+  socket_io_client: ^2.0.0
+  intl: ^0.18.1
+  flutter_keyboard_visibility: ^6.0.0
+  flutter_dotenv: ^5.2.1
+  dotted_border: ^2.1.0
+  
+  # 음성 통화를 위한 패키지
+  agora_rtc_engine: ^6.5.2
+  permission_handler: ^12.0.0+1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/
+    - .env

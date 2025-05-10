@@ -1,0 +1,83 @@
+import 'package:flutter/material.dart';
+
+class MenteePostDetailPage extends StatefulWidget {
+  const MenteePostDetailPage({Key? key}) : super(key: key);
+
+  @override
+  _MenteePostDetailPageState createState() => _MenteePostDetailPageState();
+}
+
+class _MenteePostDetailPageState extends State<MenteePostDetailPage> {
+  String postId = '';
+  String title = '';
+  String content = '';
+  String writerName = '';
+  String writer = '';
+  String timestamp = '';
+  String userId = '';
+  String userName = '';
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    // 전달된 arguments를 받아오기
+    final args = ModalRoute.of(context)?.settings.arguments as Map?;
+    if (args != null) {
+      postId = args['postId'] ?? '';
+      title = args['title'] ?? '';
+      content = args['content'] ?? '';
+      writerName = args['writerName'] ?? '';
+      writer = args['writerId'] ?? ''; // writerId 대신 writer로 변경
+      timestamp = args['timestamp'] ?? '';
+      userId = args['userID'] ?? '';
+      userName = args['userName'] ?? '';
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(title),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.chat),
+            onPressed: () {
+              // 채팅 화면으로
+              print("채팅 이동 인자: roomId=$postId, id=$userId, receiverId=$writer, name=$writerName");
+              Navigator.pushNamed(context, '/chat', arguments: {
+                'roomId': postId, // roomId를 postId로 사용
+                'id': userId,    // writerId 대신 writer로 변경
+                'receiverId': writer,  // writerId 대신 writer로 변경
+                'name': writerName,
+              });
+            },
+          ),
+        ],
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              title,
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 10),
+            Text(
+              content,
+              style: TextStyle(fontSize: 16),
+            ),
+            SizedBox(height: 20),
+            Text(
+              '작성자: $writerName ($writer) · 작성일: $timestamp', // writerId 대신 writer로 변경
+              style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
