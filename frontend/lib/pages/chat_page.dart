@@ -30,7 +30,8 @@ class _ChatPageState extends State<ChatPage> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+    final args =
+        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
 
     if (args != null) {
       senderId = args['id'] ?? '';
@@ -120,9 +121,12 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   Future<void> _createCollaborationProject() async {
-    String chatHistory = _messages.map((msg) =>
-    "${msg['senderId'] == senderId ? '나' : receiverName}: ${msg['message']}"
-    ).join('\n');
+    String chatHistory = _messages
+        .map(
+          (msg) =>
+              "${msg['senderId'] == senderId ? '나' : receiverName}: ${msg['message']}",
+        )
+        .join('\n');
 
     try {
       setState(() {
@@ -162,45 +166,47 @@ class _ChatPageState extends State<ChatPage> {
   void _showProjectCreatedDialog(String projectId) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text('프로젝트 생성 완료'),
-        content: Text('협업 프로젝트가 성공적으로 생성되었습니다.'),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            child: Text('닫기'),
+      builder:
+          (context) => AlertDialog(
+            title: Text('프로젝트 생성 완료'),
+            content: Text('협업 프로젝트가 성공적으로 생성되었습니다.'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('닫기'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  Navigator.pushNamed(
+                    context,
+                    '/project', //////////////////////////////////////////////////////////////////////
+                    arguments: {'projectId': projectId},
+                  );
+                },
+                child: Text('프로젝트로 이동'),
+              ),
+            ],
           ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-              Navigator.pushNamed(
-                context,
-                '/project_detail',
-                arguments: {'projectId': projectId},
-              );
-            },
-            child: Text('프로젝트로 이동'),
-          ),
-        ],
-      ),
     );
   }
 
   void _showErrorDialog(String message) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text('오류'),
-        content: Text(message),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text('확인'),
+      builder:
+          (context) => AlertDialog(
+            title: Text('오류'),
+            content: Text(message),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text('확인'),
+              ),
+            ],
           ),
-        ],
-      ),
     );
   }
 
@@ -240,31 +246,32 @@ class _ChatPageState extends State<ChatPage> {
             tooltip: '협업 프로젝트 생성',
             onPressed: () {
               if (_messages.isEmpty) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('채팅 내용이 필요합니다.')),
-                );
+                ScaffoldMessenger.of(
+                  context,
+                ).showSnackBar(SnackBar(content: Text('채팅 내용이 필요합니다.')));
                 return;
               }
 
               showDialog(
                 context: context,
-                builder: (context) => AlertDialog(
-                  title: Text('협업 프로젝트 생성'),
-                  content: Text('채팅 내용과 게시글 정보를 기반으로 협업 프로젝트를 생성하시겠습니까?'),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.of(context).pop(),
-                      child: Text('취소'),
+                builder:
+                    (context) => AlertDialog(
+                      title: Text('협업 프로젝트 생성'),
+                      content: Text('채팅 내용과 게시글 정보를 기반으로 협업 프로젝트를 생성하시겠습니까?'),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          child: Text('취소'),
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                            _createCollaborationProject();
+                          },
+                          child: Text('생성'),
+                        ),
+                      ],
                     ),
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                        _createCollaborationProject();
-                      },
-                      child: Text('생성'),
-                    ),
-                  ],
-                ),
               );
             },
           ),
@@ -282,14 +289,16 @@ class _ChatPageState extends State<ChatPage> {
                 bool isCurrentUser = message['senderId'] == senderId;
 
                 return Align(
-                  alignment: isCurrentUser
-                      ? Alignment.centerRight
-                      : Alignment.centerLeft,
+                  alignment:
+                      isCurrentUser
+                          ? Alignment.centerRight
+                          : Alignment.centerLeft,
                   child: Container(
                     margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                     padding: EdgeInsets.all(10),
                     decoration: BoxDecoration(
-                      color: isCurrentUser ? Colors.blue[100] : Colors.grey[200],
+                      color:
+                          isCurrentUser ? Colors.blue[100] : Colors.grey[200],
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Column(
