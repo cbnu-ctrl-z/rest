@@ -190,51 +190,6 @@ class _ProjectPageState extends State<ProjectPage> {
 
 
     return Scaffold(
-      appBar: AppBar(
-          backgroundColor: Colors.white, // 배경색 흰색으로 설정
-          elevation: 0, // 그림자 제거
-          leading: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              children: [
-                Image.asset(
-                  'assets/logo.jpg', // 로고 이미지 경로
-                 fit: BoxFit.contain,
-                ),
-              ],
-            ),
-            ),
-          title: Row(
-            children: [
-              Text(
-                '멘톡',
-                style: TextStyle(
-                  color: Colors.black, // 텍스트 색상 검정으로
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              SizedBox(width: 4),
-              Text(
-                '멘토 매칭 추천 서비스',
-                style: TextStyle(
-                  color: Colors.grey,
-                  fontSize: 12,
-                ),
-              ),
-            ],
-          ),
-          centerTitle: false, // 타이틀 왼쪽 정렬
-          actions: [
-            IconButton(
-              icon: Icon(Icons.notifications_outlined, color: Colors.red),
-              onPressed: () {},
-            ),
-            IconButton(
-              icon: Icon(Icons.settings_outlined, color: Colors.grey),
-              onPressed: () {},
-            ),
-          ],
-        ),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
