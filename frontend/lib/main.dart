@@ -4,10 +4,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'pages/signup_page.dart';
 import 'pages/login_page.dart';
-import 'pages/freetime_input_page.dart';
-import 'pages/matching_page.dart';
 import 'pages/home_page.dart';
-import 'pages/settings_page.dart';
 import 'pages/splash_page.dart';
 import 'pages/find_idpw.dart';
 import 'pages/chat_page.dart';
@@ -73,10 +70,7 @@ class MyApp extends StatefulWidget {
               '/splash': (context) => SplashPage(),
               '/signup': (context) => SignUpPage(),
               '/login': (context) => LoginPage(),
-              '/freetime': (context) => FreeTimeInputPage(),
-              '/match': (context) => MatchingPage(),
               '/home': (context) => HomePage(),
-              '/settings': (context) => SettingsPage(),
               '/chat': (context) => ChatPage(),
               '/find': (context) => FindAccountpage(),
               '/mentorBoard': (context) => MentorBoardPage(), // 🔹 추가
