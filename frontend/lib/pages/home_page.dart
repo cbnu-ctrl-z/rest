@@ -9,10 +9,7 @@ import 'package:intl/intl.dart';
 import 'project_page.dart';
 import 'chat_load.dart';
 import 'profile_page.dart';
-import 'mentor_board_page.dart';
-import 'mentee_board_page.dart';
 
-// --------------------- HomePage ---------------------
 
 class HomePage extends StatefulWidget {
   @override
@@ -168,32 +165,57 @@ class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
       return Center(child: CircularProgressIndicator());
     }
 
-    return Column(
-      children: [
-        SizedBox(height: 20),
-        TabBar(
-          controller: _tabController!,
-          labelColor: Colors.white,
-          unselectedLabelColor: Colors.black,
-          indicator: BoxDecoration(
-            borderRadius: BorderRadius.circular(30),
-            gradient: LinearGradient(colors: [Color(0xFF36eff4), Color(0xFF8A6FF0)]),
-          ),
-          tabs: [
-            Tab(text: '멘토 게시판'),
-            Tab(text: '멘티 게시판'),
-          ],
-        ),
-        Expanded(
-          child: TabBarView(
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: Column(
+        children: [
+          SizedBox(height: 20),
+          TabBar(
             controller: _tabController!,
-            children: [
-              _buildPostList(mentorPosts),
-              _buildPostList(menteePosts),
+            labelColor: Colors.white,
+            unselectedLabelColor: Colors.black,
+            indicator: BoxDecoration(
+              borderRadius: BorderRadius.circular(30),
+              gradient: LinearGradient(colors: [Color(0xFF36eff4), Color(0xFF8A6FF0)]),
+            ),
+            tabs: [
+              Tab(text: '멘토 게시판'),
+              Tab(text: '멘티 게시판'),
             ],
           ),
-        ),
-      ],
+          Expanded(
+            child: TabBarView(
+              controller: _tabController!,
+              children: [
+                _buildPostList(mentorPosts),
+                _buildPostList(menteePosts),
+              ],
+            ),
+          ),
+        ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          final currentTabIndex = _tabController!.index;
+          if (currentTabIndex == 0) {
+            Navigator.pushNamed(
+              context,
+              '/mentorWrite',
+              arguments: {'id': widget.id, 'name': widget.name},
+            ).then((_) => fetchPosts());
+          } else {
+            Navigator.pushNamed(
+              context,
+              '/menteeWrite',
+              arguments: {'id': widget.id, 'name': widget.name},
+            ).then((_) => fetchPosts());
+          }
+        },
+        backgroundColor: Colors.red, // 진한 빨간색
+        shape: CircleBorder(), // 동그란 모양
+        child: Icon(Icons.edit, color: Colors.white), // 흰색 연필 아이콘
+      ),
+
     );
   }
 
@@ -220,21 +242,12 @@ class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
         }
 
         return Card(
-          elevation: 2,
-          margin: const EdgeInsets.symmetric(vertical: 8),
-          child: ListTile(
-            title: Text(title, style: TextStyle(fontWeight: FontWeight.bold)),
-            subtitle: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(height: 4),
-                Text(content, maxLines: 2, overflow: TextOverflow.ellipsis),
-                SizedBox(height: 8),
-                Text('$writerName($writer) · $formattedDate',
-                    style: TextStyle(fontSize: 12, color: Colors.grey[600])),
-              ],
-            ),
-            isThreeLine: true,
+          elevation: 4, // 그림자 효과를 더 강조
+          margin: const EdgeInsets.symmetric(vertical: 12),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          color: Colors.white,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(16),
             onTap: () {
               Navigator.pushNamed(
                 context,
@@ -251,11 +264,70 @@ class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
                 },
               );
             },
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // 제목
+                  Text(
+                    title,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                      color: Colors.black,
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                  // 내용
+                  Text(
+                    content,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: Colors.black87,
+                      fontSize: 14,
+                    ),
+                  ),
+                  SizedBox(height: 12),
+                  // 작성자 및 날짜
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(Icons.person_outline, color: Colors.grey, size: 14),
+                          SizedBox(width: 4),
+                          Text(
+                            writerName,
+                            style: TextStyle(color: Colors.grey, fontSize: 12),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Icon(Icons.access_time, color: Colors.grey, size: 14),
+                          SizedBox(width: 4),
+                          Text(
+                            formattedDate,
+                            style: TextStyle(color: Colors.grey, fontSize: 12),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 8),
+                  // 구분선
+                  Divider(color: Colors.grey[300], thickness: 1),
+                ],
+              ),
+            ),
           ),
         );
       },
     );
   }
+
 }
 
 // --------------------- ProjectTab ---------------------
@@ -266,7 +338,7 @@ class ProjectTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ProjectPage(); // id 넘기고 싶으면 여기서 넘김
+    return ProjectPage(); // 필요하면 id 전달
   }
 }
 

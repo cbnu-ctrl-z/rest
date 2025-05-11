@@ -17,13 +17,13 @@ class _ChatPageState extends State<ChatPage> {
   List<dynamic> _messages = [];
   late IO.Socket _socket;
   bool _isLoading = true;
-  bool _isCreatingProject = false; // 🔥 추가된 로딩 상태
+  bool _isCreatingProject = false;
 
   late String senderId;
   late String receiverId;
   late String receiverName;
   late String roomId;
-
+  String? receiverProfile;
   String? postTitle;
   String? postContent;
 
@@ -38,6 +38,7 @@ class _ChatPageState extends State<ChatPage> {
       receiverId = args['receiverId'] ?? '';
       receiverName = args['name'] ?? '';
       roomId = args['roomId'] ?? '';
+      receiverProfile = args['profile'] ?? '';
 
       postTitle = args['postTitle'];
       postContent = args['postContent'];
@@ -130,7 +131,7 @@ class _ChatPageState extends State<ChatPage> {
 
     try {
       setState(() {
-        _isCreatingProject = true; // 🔥 로딩 시작
+        _isCreatingProject = true;
       });
 
       final url = '${dotenv.env['API_URL']}/projects/create';
@@ -158,7 +159,7 @@ class _ChatPageState extends State<ChatPage> {
       _showErrorDialog('오류가 발생했습니다: $e');
     } finally {
       setState(() {
-        _isCreatingProject = false; // 🔥 로딩 끝
+        _isCreatingProject = false;
       });
     }
   }
@@ -166,30 +167,27 @@ class _ChatPageState extends State<ChatPage> {
   void _showProjectCreatedDialog(String projectId) {
     showDialog(
       context: context,
-      builder:
-          (context) => AlertDialog(
-            title: Text('프로젝트 생성 완료'),
-            content: Text('협업 프로젝트가 성공적으로 생성되었습니다.'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: Text('닫기'),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  Navigator.pushNamed(
-                    context,
-                    '/project', //////////////////////////////////////////////////////////////////////
-                    arguments: {'projectId': projectId},
-                  );
-                },
-                child: Text('프로젝트로 이동'),
-              ),
-            ],
+      builder: (context) => AlertDialog(
+        title: Text('프로젝트 생성 완료'),
+        content: Text('협업 프로젝트가 성공적으로 생성되었습니다.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text('닫기'),
           ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              Navigator.pushNamed(
+                context,
+                '/project_detail',
+                arguments: {'projectId': projectId},
+              );
+            },
+            child: Text('프로젝트로 이동'),
+          ),
+        ],
+      ),
     );
   }
 
@@ -239,10 +237,24 @@ class _ChatPageState extends State<ChatPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(receiverName),
+        backgroundColor: Colors.white,
+        elevation: 1,
+        title: Row(
+          children: [
+            CircleAvatar(
+              backgroundImage: NetworkImage(receiverProfile ?? ''),
+              radius: 18,
+            ),
+            SizedBox(width: 10),
+            Text(
+              receiverName,
+              style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
         actions: [
           IconButton(
-            icon: Icon(Icons.add_task),
+            icon: Icon(Icons.add_task, color: Colors.black),
             tooltip: '협업 프로젝트 생성',
             onPressed: () {
               if (_messages.isEmpty) {
@@ -276,6 +288,7 @@ class _ChatPageState extends State<ChatPage> {
             },
           ),
         ],
+        iconTheme: IconThemeData(color: Colors.black),
       ),
       body: Column(
         children: [
@@ -289,32 +302,44 @@ class _ChatPageState extends State<ChatPage> {
                 bool isCurrentUser = message['senderId'] == senderId;
 
                 return Align(
-                  alignment:
-                      isCurrentUser
-                          ? Alignment.centerRight
-                          : Alignment.centerLeft,
-                  child: Container(
-                    margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                    padding: EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      color:
-                          isCurrentUser ? Colors.blue[100] : Colors.grey[200],
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          message['message'],
-                          style: TextStyle(fontSize: 16),
+                  alignment: isCurrentUser ? Alignment.centerRight : Alignment.centerLeft,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: isCurrentUser ? MainAxisAlignment.end : MainAxisAlignment.start,
+                    children: [
+                      if (!isCurrentUser)
+                        Padding(
+                          padding: const EdgeInsets.only(left: 8.0, right: 5.0),
+                          child: CircleAvatar(
+                            radius: 16,
+                            backgroundImage: NetworkImage(receiverProfile ?? ''),
+                          ),
                         ),
-                        SizedBox(height: 5),
-                        Text(
-                          _formatTimestamp(message['timestamp']),
-                          style: TextStyle(fontSize: 10, color: Colors.grey),
+                      Flexible(
+                        child: Container(
+                          margin: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+                          padding: EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            color: isCurrentUser ? Colors.blue[100] : Colors.grey[200],
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                message['message'],
+                                style: TextStyle(fontSize: 16),
+                              ),
+                              SizedBox(height: 5),
+                              Text(
+                                _formatTimestamp(message['timestamp']),
+                                style: TextStyle(fontSize: 10, color: Colors.grey),
+                              ),
+                            ],
+                          ),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 );
               },
