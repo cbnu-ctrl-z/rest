@@ -8,8 +8,6 @@ import 'pages/home_page.dart';
 import 'pages/splash_page.dart';
 import 'pages/find_idpw.dart';
 import 'pages/chat_page.dart';
-import 'pages/mentor_board_page.dart';
-import 'pages/mentee_board_page.dart';
 import 'pages/mentor_write_page.dart';
 import 'pages/mentee_write_page.dart';
 import 'pages/mentee_post_detail_page.dart';
@@ -73,10 +71,8 @@ class MyApp extends StatefulWidget {
               '/home': (context) => HomePage(),
               '/chat': (context) => ChatPage(),
               '/find': (context) => FindAccountpage(),
-              '/mentorBoard': (context) => MentorBoardPage(), // 🔹 추가
-              '/menteeBoard': (context) => MenteeBoardPage(), // 🔹 추가
-              '/mentorWrite': (context) => MentorWritePage(),   // 🔹 추가
-              '/menteeWrite': (context) => MenteeWritePage(),   // 🔹 추가
+              '/mentorWrite': (context) => MentorWritePage(),
+              '/menteeWrite': (context) => MenteeWritePage(),
               '/mentee_post_detail': (context) => MenteePostDetailPage(),
               '/mentor_post_detail': (context) => MentorPostDetailPage(),
               '/project' : (context) => ProjectPage(),

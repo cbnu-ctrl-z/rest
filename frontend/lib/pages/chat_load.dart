@@ -70,20 +70,49 @@ class _ChatbuttonState extends State<Chatbutton> {
       itemCount: chatRooms.length,
       itemBuilder: (context, index) {
         final room = chatRooms[index];
-        return ListTile(
-          title: Text(room['otherUserName']),
-          subtitle: Text(room['lastMessage']),
-          trailing: Text(formatKSTTime(room['lastTimestamp'])),
-          onTap: () {
-            Navigator.pushNamed(context, '/chat', arguments: {
-              'roomId': room['roomId'],
-              'id': widget.id,
-              'receiverId': room['otherUserId'],
-              'name': room['otherUserName'],
-            }).then((_) {
-              fetchChatRooms();
-            });
-          },
+        return Card(
+          margin: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          child: ListTile(
+            contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+            leading: CircleAvatar(
+              radius: 24,
+              backgroundImage: room['otherUserProfileUrl'] != null
+                  ? NetworkImage(room['otherUserProfileUrl'])
+                  : null,
+              backgroundColor: Colors.blue[100],
+              child: room['otherUserProfileUrl'] == null
+                  ? Text(
+                room['otherUserName'].substring(0, 1),
+                style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+              )
+                  : null,
+            ),
+            title: Text(
+              room['otherUserName'],
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            ),
+            subtitle: Text(
+              room['lastMessage'],
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+            trailing: Text(
+              formatKSTTime(room['lastTimestamp']),
+              style: TextStyle(fontSize: 12, color: Colors.grey),
+            ),
+            onTap: () {
+              Navigator.pushNamed(context, '/chat', arguments: {
+                'roomId': room['roomId'],
+                'id': widget.id,
+                'receiverId': room['otherUserId'],
+                'name': room['otherUserName'],
+                'profile' : room['otherUserProfileUrl'],
+              }).then((_) {
+                fetchChatRooms();
+              });
+            },
+          ),
         );
       },
     );
@@ -105,15 +134,13 @@ class _ChatPageState extends State<ChatPage> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // 전달된 arguments 받기
     final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
 
     if (args != null) {
-      print('전달된 arguments: $args'); // 디버깅용
-      senderId = args['id'];            // senderId 설정
-      receiverId = args['receiverId'];  // receiverId 설정
-      roomId = args['roomId'];          // roomId 설정
-      _fetchMessages();                 // 메시지 가져오기
+      senderId = args['id'];
+      receiverId = args['receiverId'];
+      roomId = args['roomId'];
+      _fetchMessages();
     }
   }
 
@@ -177,25 +204,39 @@ class _ChatPageState extends State<ChatPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('채팅')),
+      appBar: AppBar(
+        title: Text('채팅', style: TextStyle(color: Colors.black)),
+        backgroundColor: Colors.white,
+        elevation: 1,
+        iconTheme: IconThemeData(color: Colors.black),
+      ),
       body: Column(
         children: [
           Expanded(
             child: ListView.builder(
               itemCount: _messages.length,
+              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               itemBuilder: (context, index) {
                 final msg = _messages[index];
                 final isMe = msg['sender'] == senderId;
-                return Align(
+                return Container(
                   alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
+                  margin: EdgeInsets.symmetric(vertical: 4),
                   child: Container(
-                    padding: EdgeInsets.all(10),
-                    margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                    padding: EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                     decoration: BoxDecoration(
-                      color: isMe ? Colors.blue[200] : Colors.grey[300],
-                      borderRadius: BorderRadius.circular(10),
+                      color: isMe ? Colors.blueAccent : Colors.grey[300],
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(12),
+                        topRight: Radius.circular(12),
+                        bottomLeft: Radius.circular(isMe ? 12 : 0),
+                        bottomRight: Radius.circular(isMe ? 0 : 12),
+                      ),
                     ),
-                    child: Text(msg['content']),
+                    child: Text(
+                      msg['content'],
+                      style: TextStyle(color: isMe ? Colors.white : Colors.black87),
+                    ),
                   ),
                 );
               },
@@ -206,18 +247,33 @@ class _ChatPageState extends State<ChatPage> {
             child: Row(
               children: [
                 Expanded(
-                  child: TextField(
-                    controller: _messageController,
-                    decoration: InputDecoration(hintText: '메시지 입력...'),
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 12),
+                    decoration: BoxDecoration(
+                      color: Colors.grey[100],
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(color: Colors.grey[300]!),
+                    ),
+                    child: TextField(
+                      controller: _messageController,
+                      decoration: InputDecoration(
+                        border: InputBorder.none,
+                        hintText: '메시지를 입력하세요...',
+                      ),
+                    ),
                   ),
                 ),
-                IconButton(
-                  icon: Icon(Icons.send, color: Colors.blue),
-                  onPressed: () {
-                    if (_messageController.text.trim().isNotEmpty) {
-                      _sendMessage(_messageController.text.trim());
-                    }
-                  },
+                SizedBox(width: 8),
+                CircleAvatar(
+                  backgroundColor: Colors.blueAccent,
+                  child: IconButton(
+                    icon: Icon(Icons.send, color: Colors.white),
+                    onPressed: () {
+                      if (_messageController.text.trim().isNotEmpty) {
+                        _sendMessage(_messageController.text.trim());
+                      }
+                    },
+                  ),
                 ),
               ],
             ),

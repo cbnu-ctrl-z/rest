@@ -310,7 +310,6 @@ class _ProfilePageDetailedState extends State<ProfilePageDetailed> {
                   },
                 ),
                 Divider(),
-                     // 언어 설정 추가 부분
                 ListTile(
                   leading: Icon(Icons.language),
                   title: Text('언어 설정'),
@@ -323,12 +322,28 @@ class _ProfilePageDetailedState extends State<ProfilePageDetailed> {
                       );
                     }).toList(),
                     onChanged: (value) {
-    setState(() {
-    selectedLanguage = value!;
-    _updateLanguagePreference(userId!, selectedLanguage);
-    });
-    },
+                      setState(() {
+                        selectedLanguage = value!;
+                        _updateLanguagePreference(userId!, selectedLanguage);
+                      });
+                    },
                   ),
+                ),
+                Divider(),
+                ListTile(
+                  leading: Icon(Icons.logout, color: Colors.red),
+                  title: Text(
+                    '로그아웃',
+                    style: TextStyle(color: Colors.red),
+                  ),
+                  onTap: () {
+                    // 로그아웃 로직: 필요 시 토큰 삭제 등 수행 가능
+                    Navigator.pushNamedAndRemoveUntil(
+                      context,
+                      '/login',  // 로그인 화면 라우트 이름
+                          (route) => false, // 모든 이전 화면 제거
+                    );
+                  },
                 ),
               ],
             ),
