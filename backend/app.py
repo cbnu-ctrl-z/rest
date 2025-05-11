@@ -7,7 +7,6 @@ from flask_socketio import SocketIO
 from flask_cors import CORS
 from flask import send_from_directory
 from routes.auth import auth_bp
-from routes.freetime import freetime_bp
 from routes.chat import chat_bp  # 채팅 블루프린트 추가
 from routes.findidpw import findidpw_bp #idpw찾기 블루프린트 추가
 from routes.Profile_api import profile_bp  # 새로운 Blueprint 임포트
@@ -42,7 +41,6 @@ app.db = client['signup_db']
 
 # 블루프린트 등록
 app.register_blueprint(auth_bp)
-app.register_blueprint(freetime_bp)
 app.register_blueprint(chat_bp)  # 채팅 블루프린트 등록
 app.register_blueprint(findidpw_bp)  # findidpw 블루프린트 등록
 app.register_blueprint(profile_bp)  # 새로운 Blueprint 등록

@@ -24,17 +24,6 @@ class _SignUpPageState extends State<SignUpPage> {
 
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
-  final Map<String, String> languageDisplayToValue = {
-    '한국어': 'Korean',
-    'English': 'English',
-  };
-
-  final Map<String, String> languageValueToDisplay = {
-    'Korean': '한국어',
-    'English': 'English',
-  };
-
-  String _selectedLanguageDisplay = '한국어';
 
   @override
   void dispose() {
@@ -97,18 +86,15 @@ class _SignUpPageState extends State<SignUpPage> {
 
     final url = '${dotenv.env['API_URL']}/signup';
     try {
-      final languageValue = languageDisplayToValue[_selectedLanguageDisplay] ?? 'Korean';
       final response = await http.post(
         Uri.parse(url),
         headers: {'Content-Type': 'application/json'},
-
-      body: jsonEncode({
-      'name': name,
-      'email': email,
-      'id': id,
-      'password': password,
-      'language': languageValue,
-      }),
+        body: jsonEncode({
+          'name': name,
+          'email': email,
+          'id': id,
+          'password': password,
+        }),
       );
 
       if (response.statusCode == 201) {
@@ -162,11 +148,11 @@ class _SignUpPageState extends State<SignUpPage> {
             icon: Icon(
               isConfirm
                   ? (_obscureConfirmPassword
-                      ? Icons.visibility
-                      : Icons.visibility_off)
+                  ? Icons.visibility
+                  : Icons.visibility_off)
                   : (_obscurePassword
-                      ? Icons.visibility
-                      : Icons.visibility_off),
+                  ? Icons.visibility
+                  : Icons.visibility_off),
             ),
             onPressed: () {
               setState(() {
@@ -182,33 +168,6 @@ class _SignUpPageState extends State<SignUpPage> {
       ),
     );
   }
-
-  Widget _buildLanguageDropdown() {
-    final List<String> _languageDisplayList = ['한국어', 'English'];
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: DropdownButtonFormField<String>(
-        value: _selectedLanguageDisplay,
-        items: _languageDisplayList
-            .map((lang) => DropdownMenuItem(value: lang, child: Text(lang)))
-            .toList(),
-        onChanged: (value) {
-          setState(() {
-            _selectedLanguageDisplay = value!;
-          });
-        },
-        decoration: InputDecoration(
-          prefixIcon: Icon(Icons.language, color: Colors.black),
-          labelText: '언어 설정',
-          border: UnderlineInputBorder(),
-        ),
-      ),
-    );
-  }
-
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -226,20 +185,14 @@ class _SignUpPageState extends State<SignUpPage> {
                   child: Column(
                     children: [
                       SizedBox(height: 20),
-                      Image.asset('assets/simpo_b.jpg', width: 80, height: 80),
-                      Text(
-                        '쉼표',
-                        style: TextStyle(fontSize: 28, color: Colors.black),
-                      ),
+                      Image.asset('assets/logo.jpg', width: 80, height: 80),
                       SizedBox(height: 7),
                       Text(
-                        '공강 매칭 앱 쉼표에 오신걸 환영합니다!',
+                        '멘톡에 오신걸 환영합니다!',
                         style: TextStyle(fontSize: 14, color: Colors.black54),
                         textAlign: TextAlign.center,
                       ),
                       SizedBox(height: 20),
-                      _buildLanguageDropdown(),
-
                       _buildTextField(
                         controller: _nameController,
                         focusNode: _nameFocus,
@@ -258,7 +211,6 @@ class _SignUpPageState extends State<SignUpPage> {
                         icon: Icons.account_circle,
                         label: '아이디',
                       ),
-
                       _buildPasswordField(
                         controller: _passwordController,
                         focusNode: _passwordFocus,
@@ -271,19 +223,26 @@ class _SignUpPageState extends State<SignUpPage> {
                         label: '비밀번호 확인',
                         isConfirm: true,
                       ),
-                      SizedBox(height: 20),
-                      ElevatedButton(
-                        onPressed: _signUp,
-                        style: ElevatedButton.styleFrom(
-                          minimumSize: Size.fromHeight(55),
-                          backgroundColor: Color(0xff36eff4),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
+                      Container(
+                        width: double.infinity,
+                        height: 55,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [Color(0xFF36eff4), Color(0xFF8A6FF0)],
                           ),
+                          borderRadius: BorderRadius.circular(20),
                         ),
-                        child: Text(
-                          '회원가입',
-                          style: TextStyle(fontSize: 18, color: Colors.white),
+                        child: ElevatedButton(
+                          onPressed: _signUp,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.transparent,
+                            shadowColor: Colors.transparent,
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                          ),
+                          child: Text(
+                            '회원가입',
+                            style: TextStyle(fontSize: 18, color: Colors.white),
+                          ),
                         ),
                       ),
                       SizedBox(height: 10),
@@ -295,14 +254,18 @@ class _SignUpPageState extends State<SignUpPage> {
                             style: TextStyle(color: Colors.black54),
                           ),
                           TextButton(
-                            onPressed:
-                                () => Navigator.pushNamed(context, '/login'),
-                            child: Text(
-                              '로그인',
-                              style: TextStyle(
-                                color: Color(0xff36eff4),
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
+                            onPressed: () => Navigator.pushNamed(context, '/login'),
+                            child: ShaderMask(
+                              shaderCallback: (bounds) => LinearGradient(
+                                colors: [Color(0xFF36eff4), Color(0xFF8A6FF0)],
+                              ).createShader(bounds),
+                              child: Text(
+                                '로그인',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
                             ),
                           ),
@@ -316,7 +279,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 Padding(
                   padding: const EdgeInsets.only(bottom: 20),
                   child: Text(
-                    '© 2025 쉼표',
+                    '© 2025 멘톡',
                     style: TextStyle(color: Colors.black54, fontSize: 12),
                   ),
                 ),

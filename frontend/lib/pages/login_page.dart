@@ -1,16 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
+import 'package:http/http.dart' as http;
 import 'dart:convert';
-
-const String iconFont = CupertinoIcons.iconFont;
-const String iconFontPackage = CupertinoIcons.iconFontPackage;
-const IconData lock = IconData(
-  0xf4c8,
-  fontFamily: iconFont,
-  fontPackage: iconFontPackage,
-);
 
 class LoginPage extends StatefulWidget {
   @override
@@ -18,29 +10,11 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  late final TextEditingController _idController;
-  late final TextEditingController _passwordController;
-  late final FocusNode _idFocusNode;
-  late final FocusNode _passwordFocusNode;
+  final TextEditingController _idController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final FocusNode _idFocusNode = FocusNode();
+  final FocusNode _passwordFocusNode = FocusNode();
   bool _obscureText = true;
-
-  @override
-  void initState() {
-    super.initState();
-    _idController = TextEditingController();
-    _passwordController = TextEditingController();
-    _idFocusNode = FocusNode();
-    _passwordFocusNode = FocusNode();
-  }
-
-  @override
-  void dispose() {
-    _idController.dispose();
-    _passwordController.dispose();
-    _idFocusNode.dispose();
-    _passwordFocusNode.dispose();
-    super.dispose();
-  }
 
   void showCustomSnackBar(String message, Color color) {
     final snackBar = SnackBar(
@@ -58,8 +32,8 @@ class _LoginPageState extends State<LoginPage> {
     _idFocusNode.unfocus();
     _passwordFocusNode.unfocus();
 
-    String id = _idController.text.trim();
-    String password = _passwordController.text.trim();
+    final id = _idController.text.trim();
+    final password = _passwordController.text.trim();
 
     if (id.isEmpty || password.isEmpty) {
       showCustomSnackBar('아이디와 비밀번호를 입력하세요!', Colors.red);
@@ -80,11 +54,7 @@ class _LoginPageState extends State<LoginPage> {
         showCustomSnackBar('로그인 성공! 홈 화면으로 이동합니다.', Colors.blue);
         _idController.clear();
         _passwordController.clear();
-        Navigator.pushNamed(
-          context,
-          '/home',
-          arguments: {'id': id, 'name': name},
-        );
+        Navigator.pushNamed(context, '/home', arguments: {'id': id, 'name': name});
       } else {
         String errorMessage = '아이디 또는 비밀번호가 올바르지 않습니다.';
         try {
@@ -102,165 +72,155 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
+  Widget _buildTextField({
+    required String label,
+    required IconData icon,
+    required TextEditingController controller,
+    required FocusNode focusNode,
+    bool obscure = false,
+    Widget? suffixIcon,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: TextField(
+        controller: controller,
+        focusNode: focusNode,
+        obscureText: obscure,
+        decoration: InputDecoration(
+          prefixIcon: Icon(icon, color: Colors.black),
+          labelText: label,
+          border: UnderlineInputBorder(),
+          suffixIcon: suffixIcon,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       backgroundColor: Colors.white,
       appBar: AppBar(backgroundColor: Colors.white, elevation: 0),
-      body: Stack(
-        children: [
-          SingleChildScrollView(
-            child: SafeArea(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 25),
-                    child: Column(
-                      children: [
-                        Image.asset(
-                          'assets/logo.jpg',
-                          width: 80,
-                          height: 80,
-                        ),
-                        Text(
-                          '쉼표',
-                          style: TextStyle(fontSize: 28, color: Colors.black),
-                        ),
-                        SizedBox(height: 7),
-                        Text(
-                          '공강 매칭 앱 쉼표에 오신걸 환영합니다!',
-                          style: TextStyle(fontSize: 14, color: Colors.black54),
-                          textAlign: TextAlign.center,
-                        ),
-                        SizedBox(height: 20),
+      body: KeyboardVisibilityBuilder(
+        builder: (context, isKeyboardVisible) {
+          return Column(
+            children: [
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(horizontal: 25),
+                  child: Column(
+                    children: [
+                      SizedBox(height: 20),
+                      Image.asset('assets/logo.jpg', width: 80, height: 80),
+                      SizedBox(height: 7),
+                      Text(
+                        '멘톡',
+                        style: TextStyle(fontSize: 20, fontWeight:FontWeight.bold,color: Colors.black),
+                        textAlign: TextAlign.center,
+                      ),
+                      SizedBox(height: 20),
 
-                        TextFormField(
-                          controller: _idController,
-                          focusNode: _idFocusNode,
-                          decoration: InputDecoration(
-                            labelText: "아이디를 입력해주세요",
-                            labelStyle: TextStyle(
-                              fontSize: 14,
-                              color: const Color.fromARGB(255, 78, 73, 73),
-                            ),
-                            filled: true,
-                            fillColor: Colors.transparent,
-                            border: UnderlineInputBorder(),
-                            prefixIcon: Icon(Icons.person),
+                      _buildTextField(
+                        label: '아이디',
+                        icon: Icons.person,
+                        controller: _idController,
+                        focusNode: _idFocusNode,
+                      ),
+                      _buildTextField(
+                        label: '비밀번호',
+                        icon: Icons.lock,
+                        controller: _passwordController,
+                        focusNode: _passwordFocusNode,
+                        obscure: _obscureText,
+                        suffixIcon: IconButton(
+                          icon: Icon(_obscureText ? Icons.visibility : Icons.visibility_off),
+                          onPressed: () {
+                            setState(() {
+                              _obscureText = !_obscureText;
+                            });
+                          },
+                        ),
+                      ),
+
+                      SizedBox(height: 20),
+                      Container(
+                        width: double.infinity,
+                        height: 55,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [Color(0xFF36eff4), Color(0xFF8A6FF0)],
                           ),
+                          borderRadius: BorderRadius.circular(20),
                         ),
-
-                        SizedBox(height: 10),
-
-                        TextFormField(
-                          controller: _passwordController,
-                          focusNode: _passwordFocusNode,
-                          obscureText: _obscureText,
-                          decoration: InputDecoration(
-                            labelText: "비밀번호를 입력해주세요",
-                            labelStyle: TextStyle(
-                              fontSize: 14,
-                              color: Colors.black,
-                            ),
-                            filled: true,
-                            fillColor: Colors.transparent,
-                            border: UnderlineInputBorder(),
-                            prefixIcon: Icon(Icons.lock),
-                            suffixIcon: IconButton(
-                              icon: Icon(
-                                _obscureText
-                                    ? Icons.visibility
-                                    : Icons.visibility_off,
-                              ),
-                              onPressed: () {
-                                setState(() {
-                                  _obscureText = !_obscureText;
-                                });
-                              },
-                            ),
-                          ),
-                        ),
-
-                        SizedBox(height: 20),
-
-                        ElevatedButton(
+                        child: ElevatedButton(
                           onPressed: _login,
                           style: ElevatedButton.styleFrom(
-                            minimumSize: Size.fromHeight(55),
-                            backgroundColor: Color(0xff36eff4),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20),
-                            ),
+                            backgroundColor: Colors.transparent,
+                            shadowColor: Colors.transparent,
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                           ),
                           child: Text(
                             '로그인',
                             style: TextStyle(fontSize: 18, color: Colors.white),
                           ),
                         ),
+                      ),
 
-                        SizedBox(height: 10),
-
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              '계정이 없으신가요?',
-                              style: TextStyle(
-                                color: const Color.fromARGB(255, 155, 150, 150),
-                              ),
-                            ),
-                            TextButton(
-                              onPressed:
-                                  () => Navigator.pushNamed(context, '/signup'),
+                      SizedBox(height: 10),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text('계정이 없으신가요?', style: TextStyle(color: Colors.black54)),
+                          TextButton(
+                            onPressed: () => Navigator.pushNamed(context, '/signup'),
+                            child: ShaderMask(
+                              shaderCallback: (bounds) => LinearGradient(
+                                colors: [Color(0xFF36eff4), Color(0xFF8A6FF0)],
+                              ).createShader(bounds),
                               child: Text(
                                 '회원가입',
                                 style: TextStyle(
-                                  color: Color(0xff36eff4),
+                                  color: Colors.white,
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
                             ),
-                          ],
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            TextButton(
-                              onPressed:
-                                  () => Navigator.pushNamed(context, '/find'),
-                              child: Text(
-                                'ID/PW 찾기',
-                                style: TextStyle(
-                                  color: Color(0xff36eff4),
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
+                          ),
+                        ],
+                      ),
+                      TextButton(
+                        onPressed: () => Navigator.pushNamed(context, '/find'),
+                        child: ShaderMask(
+                          shaderCallback: (bounds) => LinearGradient(
+                            colors: [Color(0xFF36eff4), Color(0xFF8A6FF0)],
+                          ).createShader(bounds),
+                          child: Text(
+                            'ID/PW 찾기',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
                             ),
-                          ],
+                          ),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
-            ),
-          ),
-
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 20),
-              child: Text(
-                '© 2025 쉼표',
-                style: TextStyle(color: Colors.black54, fontSize: 12),
-              ),
-            ),
-          ),
-        ],
+              if (!isKeyboardVisible)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 20),
+                  child: Text(
+                    '© 2025 멘톡',
+                    style: TextStyle(color: Colors.black54, fontSize: 12),
+                  ),
+                ),
+            ],
+          );
+        },
       ),
     );
   }
