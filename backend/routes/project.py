@@ -24,9 +24,11 @@ def create_project():
         creator_id = data.get('creatorId', '')
         room_id = data.get('roomId', '')
 
+        if creator_id in members:
+            return jsonify({'success': False, 'error': '이미 해당 사용자가 프로젝트를 진행중입니다.'}), 400
         # OpenAI API를 사용하여 프로젝트 계획 생성
         plan = generate_project_plan(title, description, chat_history)
-        
+        print("*************프로젝트 생성 완료********************")
         # MongoDB에 프로젝트 저장
         project = {
             'title': title,

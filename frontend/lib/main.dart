@@ -59,7 +59,7 @@ class _MyAppState extends State<MyApp> {
         //ThemeNotifier가 바뀔때마다 하위 위젯 테마 변경
         builder: (context, themeNotifier, child) {
           return MaterialApp(
-            title: '공강 매칭 앱',
+            title: '멘토 멘티 프로젝트 앱',
             theme: ThemeData(
               primarySwatch: Colors.green,
               brightness: themeNotifier.brightness,
@@ -76,7 +76,16 @@ class _MyAppState extends State<MyApp> {
               '/menteeWrite': (context) => MenteeWritePage(),
               '/mentee_post_detail': (context) => MenteePostDetailPage(),
               '/mentor_post_detail': (context) => MentorPostDetailPage(),
-              '/project': (context) => ProjectPage(),
+            },
+            onGenerateRoute: (settings) {
+              if (settings.name == '/project') {
+                final args = settings.arguments as Map<String, dynamic>;
+                final id = args['id'] as String;
+                return MaterialPageRoute(
+                  builder: (context) => ProjectPage(id: id),
+                );
+              }
+              return null;
             },
           );
         },

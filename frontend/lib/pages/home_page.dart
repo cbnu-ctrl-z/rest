@@ -335,10 +335,9 @@ class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
 class ProjectTab extends StatelessWidget {
   final String id;
   const ProjectTab({required this.id});
-
   @override
   Widget build(BuildContext context) {
-    return ProjectPage(); // 필요하면 id 전달
+    return ProjectPage(id:id); // 필요하면 id 전달
   }
 }
 

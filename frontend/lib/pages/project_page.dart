@@ -6,6 +6,8 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class ProjectPage extends StatefulWidget {
+  final String id;
+  const ProjectPage({required this.id});
   @override
   State<ProjectPage> createState() => _ProjectPageState();
 }
@@ -28,28 +30,32 @@ class stepItem {
 
 class _ProjectPageState extends State<ProjectPage> {
   bool isLoading = true;
-  late String step_in_DB;
+  late String stepInDB;
+  late stepItem stepData; //stepItem변수 생성, late을 통해 나중에 인스턴스 생성
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final args =
-        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
-    final projectId = args?['projectId'];
-
-    if (projectId != null) {
-      _fetchProject(projectId);
+    final userId = widget.id;
+    if (userId.isNotEmpty) {
+    _fetchProject(userId);
     }
   }
 
-  Future<void> _fetchProject(String projectId) async {
+  Future<void> _fetchProject(String userId) async {
     try {
-      final url = '${dotenv.env['API_URL']}/projects/$projectId';
-      final response = await http.get(Uri.parse(url));
-
-      if (response.statusCode == 200) {
+      final url = '${dotenv.env['API_URL']}/projects/user/$userId';
+      final useridresponse = await http.get(Uri.parse(url));
+      final List<dynamic>dbdata = jsonDecode(useridresponse.body);
+      final List<String> projectid = dbdata.map((item) => item['_id'] as String).toList();
+      final String cleanprojectid = projectid[0];
+      final projecturl  = '${dotenv.env['API_URL']}/projects/$cleanprojectid';
+      final pidresponse = await http.get(Uri.parse(projecturl));
+      final projectJson = json.decode(pidresponse.body);
+      if (pidresponse.statusCode == 200) {
+        stepInDB = projectJson['plan'] ?? '';
+        await _initStepData(); // 데이터가 준비된 후에만 stepData 초기화
         setState(() {
-          step_in_DB = json.decode(response.body);
-          isLoading = false;
+          _loading = false; // 로딩 종료
         });
       } else {
         _showErrorDialog("프로젝트 정보를 불러오지 못했습니다.");
@@ -76,7 +82,6 @@ class _ProjectPageState extends State<ProjectPage> {
     );
   }
 
-  late stepItem stepData; //stepItem변수 생성, late을 통해 나중에 인스턴스 생성
   int currentStep = 0; // 현재 진행중인 단계 표시
   int displayStep = 0; // 인디케이터 클릭 시 보여줄 단계 표시
   bool _loading =
@@ -87,17 +92,18 @@ class _ProjectPageState extends State<ProjectPage> {
   void initState() {
     //위젯트리 생성
     super.initState();
-    _initStepData();
   }
 
   Future<void> _initStepData() async {
     //비동기 함수 _initStepData 선언 / step_in_DB의 내용들을 stepItem 멤버함수에 넣음
     final parsed = _parseStepText(
-      step_in_DB,
+      stepInDB,
     ); //DB에 있는 목표텍스트를 파싱해서 변수에 저장 / 자료형 : stepItem
+    
     final savedChecked = await _loadStepState(
       parsed.stepObject.length,
     ); //부울값 저장 List<String> / 현재의 단계 진행상태를 가져옴
+    
     setState(() {
       //현재 진행상태에 따라 UI업데이트
       stepData = stepItem(
@@ -105,14 +111,10 @@ class _ProjectPageState extends State<ProjectPage> {
         stepObject: parsed.stepObject,
       ) //파싱한 데이터들을 저장하며 인스턴스 생성
       ..isChecked = savedChecked;
-      currentStep = savedChecked.indexWhere(
-        (c) => !c,
-      ); //완료되지 않은 단계 중 가장 먼저 오는 단계의 인덱스를 가짐 / 모두 완료된(ture)상태면 -1을 가짐
+      currentStep = savedChecked.indexWhere((c) => !c,); //완료되지 않은 단계 중 가장 먼저 오는 단계의 인덱스를 가짐 / 모두 완료된(ture)상태면 -1을 가짐
       if (currentStep == -1)
-        currentStep =
-            parsed.stepObject.length; //모두 완료된 상태면 현재 진행중인 단계를 마지막 단계로 표시
+        currentStep = parsed.stepObject.length; //모두 완료된 상태면 현재 진행중인 단계를 마지막 단계로 표시
       displayStep = currentStep; //인디케이터를 클릭 전 기본값은 currentStep과 동일
-      _loading = false; //데이터 준비 완료
     });
   }
 
@@ -141,19 +143,18 @@ class _ProjectPageState extends State<ProjectPage> {
   }
 
   Future<List<bool>> _loadStepState(int totalStepCount) async {
-    //총 단계수를 인자로 받음
-    final prefs =
-        await SharedPreferences.getInstance(); //앱 내 영구 저장파일에 접근하기 위한 변수, SharedPreferences 인스턴스 생성 / 자료형 :  SharedPreferences(키 - 값 쌍을 영구 저장)
-    final saved = prefs.getStringList(
-      _prefsKey,
-    ); //_prefsKey = 'step_isChecked'에 맞는 값을 가져옴 프로젝트 첫 진행시 초기값 null / 자료형 : List<String>
+    final prefs = await SharedPreferences.getInstance();
+    final saved = prefs.getStringList(_prefsKey);
     if (saved == null) {
-      //초기값이 null이면
-      return List.filled(totalStepCount, false); //모든 단계 상태가 false인 리스트 반환
+      return List.filled(totalStepCount, false);
     }
-    return saved
-        .map((e) => e == '1')
-        .toList(); //'1'은 체크(완료) -> true로 변환 /1이 아니면 미체크(미완료) ->false로 변환하여 리스트 형태 반환
+    final loaded = saved.map((e) => e == '1').toList();
+    if (loaded.length < totalStepCount) {
+      return List<bool>.from(loaded)..addAll(List.filled(totalStepCount - loaded.length, false));
+    } else if (loaded.length > totalStepCount) {
+      return loaded.sublist(0, totalStepCount);
+    }
+    return loaded;
   }
 
   Future<void> _saveStepState(List<bool> isChecked) async {
@@ -256,8 +257,7 @@ class _ProjectPageState extends State<ProjectPage> {
     if (_loading) {
       //로딩중일 경우
       return Scaffold(
-        appBar: AppBar(title: Text('프로젝트 단계')),
-        body: Center(child: CircularProgressIndicator()),
+        body: Text('현재 진행중인 프로젝트가 없습니다.'),
       );
     }
 
@@ -334,7 +334,7 @@ class _ProjectPageState extends State<ProjectPage> {
                             textAlign: TextAlign.center,
                           )
                           : Text(
-                            stepData.stepObject[displayStep],
+                            stepData.stepObject[displayStep >= stepCount ? stepCount - 1 : displayStep],
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 16,
@@ -512,23 +512,6 @@ class _ProjectPageState extends State<ProjectPage> {
                   ),
                 ),
               ],
-            ),
-
-            const SizedBox(height: 16),
-
-            // 진행률 바
-            ClipRRect(
-              borderRadius: BorderRadius.circular(30),
-              child: LinearProgressIndicator(
-                value:
-                    stepCount == 0
-                        ? 0
-                        : (currentStep > stepCount ? stepCount : currentStep) /
-                            stepCount,
-                minHeight: 14,
-                backgroundColor: Colors.grey.shade300,
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.blue.shade400),
-              ),
             ),
           ],
         ),

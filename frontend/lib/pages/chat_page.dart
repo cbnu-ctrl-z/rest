@@ -180,7 +180,7 @@ class _ChatPageState extends State<ChatPage> {
               Navigator.of(context).pop();
               Navigator.pushNamed(
                 context,
-                '/project_detail',
+                '/project',
                 arguments: {'projectId': projectId},
               );
             },
