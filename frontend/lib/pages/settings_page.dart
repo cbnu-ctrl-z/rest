@@ -43,6 +43,13 @@ class _SettingsPageState extends State<SettingsPage> {
               onPressed: () => _logout(context),
               child: Text('로그아웃'),
             ),
+            SizedBox(height: 10),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/review');
+              },
+              child: Text('리뷰하기'),
+            ),
           ],
         ),
       ),
