@@ -13,6 +13,7 @@ from routes.findidpw import findidpw_bp #idpw찾기 블루프린트 추가
 from routes.Profile_api import profile_bp  # 새로운 Blueprint 임포트
 from routes.chat import init_socket
 from routes.board import board_bp
+from routes.review import review_bp 
 
 
 load_dotenv() # 환경 변수 로드 (.env 파일에서 값을 가져올 수 있도록 설정)
@@ -47,6 +48,7 @@ app.register_blueprint(findidpw_bp)  # findidpw 블루프린트 등록
 app.register_blueprint(profile_bp)  # 새로운 Blueprint 등록
 app.register_blueprint(board_bp)
 init_socket(socketio)
+app.register_blueprint(review_bp) 
 
 @socketio.on('connect')
 def test_connect():
