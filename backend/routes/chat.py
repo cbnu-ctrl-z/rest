@@ -70,7 +70,7 @@ def get_chat_rooms():
         user_id = request.args.get('userId')
 
         chat_rooms = chat_collection.aggregate([
-            {'$match': {'$or': [{'senderId': user_id}, {'receiverId': user_id}]}},
+            {'$match': {'$or': [{'senderId': user_id}, {'receiverId': user_id}] }},
             {'$group': {
                 '_id': '$room_id',
                 'lastMessage': {'$last': '$message'},
@@ -84,23 +84,27 @@ def get_chat_rooms():
             participants = room['_id'].split('_')
             other_user_id = [p for p in participants if p != user_id][0]
 
-            # 사용자 정보 조회
             other_user = users_collection.find_one({'id': other_user_id})
             if not other_user:
                 print(f"[⚠️] 사용자 ID '{other_user_id}'에 해당하는 회원을 찾을 수 없습니다.")
                 other_user_name = "알 수 없는 사용자"
+                profile_url = None
             else:
                 other_user_name = other_user.get('name', '알 수 없는 사용자')
+                profile_url = other_user.get('profile_image')  # <-- 프로필 URL 가져오기
 
             rooms.append({
                 'roomId': room['_id'],
                 'otherUserId': other_user_id,
                 'otherUserName': other_user_name,
+                'otherUserProfileUrl': profile_url,  # <-- 응답에 포함
                 'lastMessage': room['lastMessage'],
                 'lastTimestamp': room['lastTimestamp']
             })
 
         return jsonify(rooms)
+    
+    
 
 @chat_bp.route('/chat/messages', methods=['GET'])
 def get_chat_messages():

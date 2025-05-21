@@ -13,7 +13,6 @@ def signup():
     email = data.get('email')
     id = data.get('id')
     password = data.get('password')
-    language = data.get('language','Korean')
     users_collection = current_app.db['users']  # request.app.db → current_app.db / #mongodb의 users 컬렉션에 있는 데이터를 가져옴
     
     if not name or not id or not email or not password: #세개중 하나라도 값이 없으면 에러메세지 반환환
@@ -22,11 +21,11 @@ def signup():
     if users_collection.find_one({'id': id}): #이미 존재하는 이메일이면 에러메세지 반환, find_one으로 email기준 db에서 검색을 한 뒤 일치하는 사용자의 전체 정보를 가져옴!!
         return jsonify({'error': '이미 존재하는 이메일입니다'}), 409
 
-    user_data = {'name': name, 'email':email, 'id': id, 'password': password, 'language':language,'freetimes': []} #딕셔너리 형태로 user_data에 저장
+    user_data = {'name': name, 'email':email, 'id': id, 'password': password} #딕셔너리 형태로 user_data에 저장
 
     result = users_collection.insert_one(user_data) #user_dat의 값을 users_collection객체를 통해 users컬렉션에 삽입, 삽입된 문서(mongodb 데이터)ID를 result에 저장
 
-    return jsonify({'message': '회원가입 성공!', 'id': str(result.inserted_id)}), 201 #result를 사용해서 클라이언트에게 json형식으로 반환, 새로 삽입된 문서ID도 같이 전달달
+    return jsonify({'message': '회원가입 성공!', 'id': str(result.inserted_id)}), 201 #result를 사용해서 클라이언트에게 json형식으로 반환, 새로 삽입된 문서ID도 같이 전달
 
 @auth_bp.route('/login', methods=['POST'])
 def login():

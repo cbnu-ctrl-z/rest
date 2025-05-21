@@ -4,20 +4,16 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'pages/signup_page.dart';
 import 'pages/login_page.dart';
-import 'pages/freetime_input_page.dart';
-import 'pages/matching_page.dart';
 import 'pages/home_page.dart';
-import 'pages/settings_page.dart';
 import 'pages/splash_page.dart';
 import 'pages/find_idpw.dart';
 import 'pages/chat_page.dart';
-import 'pages/mentor_board_page.dart';
-import 'pages/mentee_board_page.dart';
 import 'pages/mentor_write_page.dart';
 import 'pages/mentee_write_page.dart';
 import 'pages/mentee_post_detail_page.dart';
 import 'pages/mentor_post_detail_page.dart';
 import 'pages/project_page.dart';
+import 'pages/project_detail.dart';
 
 
 void main() async{
@@ -50,7 +46,7 @@ class MyApp extends StatefulWidget {
     }
 
   // 스플래시 화면 후 회원가입 화면으로 이동하는 함수
-  Future<void> _goToLoginPage() async {
+  Future<void> _goToLoginPage() async {//해당 함수 안 쓰는거 같은데
     await Future.delayed(Duration(seconds: 2)); // 스플래시 화면 표시 시간 (2초)
     Navigator.pushReplacementNamed(context, '/signup'); // 회원가입 화면으로 이동
   }
@@ -62,7 +58,7 @@ class MyApp extends StatefulWidget {
       child: Consumer<ThemeNotifier>( //ThemeNotifier가 바뀔때마다 하위 위젯 테마 변경
         builder: (context, themeNotifier, child) {
           return MaterialApp(
-            title: '공강 매칭 앱',
+            title: '멘톡',
             theme: ThemeData(
               primarySwatch: Colors.green,
               brightness: themeNotifier.brightness,
@@ -72,19 +68,15 @@ class MyApp extends StatefulWidget {
               '/splash': (context) => SplashPage(),
               '/signup': (context) => SignUpPage(),
               '/login': (context) => LoginPage(),
-              '/freetime': (context) => FreeTimeInputPage(),
-              '/match': (context) => MatchingPage(),
               '/home': (context) => HomePage(),
-              '/settings': (context) => SettingsPage(),
               '/chat': (context) => ChatPage(),
               '/find': (context) => FindAccountpage(),
-              '/mentorBoard': (context) => MentorBoardPage(), // 🔹 추가
-              '/menteeBoard': (context) => MenteeBoardPage(), // 🔹 추가
-              '/mentorWrite': (context) => MentorWritePage(),   // 🔹 추가
-              '/menteeWrite': (context) => MenteeWritePage(),   // 🔹 추가
+              '/mentorWrite': (context) => MentorWritePage(),
+              '/menteeWrite': (context) => MenteeWritePage(),
               '/mentee_post_detail': (context) => MenteePostDetailPage(),
               '/mentor_post_detail': (context) => MentorPostDetailPage(),
               '/project' : (context) => ProjectPage(),
+              '/project_detail': (context) => ProjectDetailPage(),
             },
           );
         },
