@@ -58,7 +58,7 @@ class MyApp extends StatefulWidget {
       child: Consumer<ThemeNotifier>( //ThemeNotifier가 바뀔때마다 하위 위젯 테마 변경
         builder: (context, themeNotifier, child) {
           return MaterialApp(
-            title: '공강 매칭 앱',
+            title: '멘톡',
             theme: ThemeData(
               primarySwatch: Colors.green,
               brightness: themeNotifier.brightness,

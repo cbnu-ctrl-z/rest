@@ -13,6 +13,7 @@ class _MenteePostDetailPageState extends State<MenteePostDetailPage> {
   String content = '';
   String writerName = '';
   String writer = '';
+  String writerProfile ='';
   String timestamp = '';
   String userId = '';
   String userName = '';
@@ -29,6 +30,7 @@ class _MenteePostDetailPageState extends State<MenteePostDetailPage> {
       content = args['content'] ?? '';
       writerName = args['writerName'] ?? '';
       writer = args['writerId'] ?? ''; // writerId 대신 writer로 변경
+      writerProfile = args['writerProfile'] ?? '';
       timestamp = args['timestamp'] ?? '';
       userId = args['userID'] ?? '';
       userName = args['userName'] ?? '';
@@ -135,6 +137,7 @@ class _MenteePostDetailPageState extends State<MenteePostDetailPage> {
               'id': userId,
               'receiverId': writer,
               'name': writerName,
+              'profile' : writerProfile,
               'postTitle': title,    // 게시글 제목 추가
               'postContent': content, // 게시글 내용 추가
             });

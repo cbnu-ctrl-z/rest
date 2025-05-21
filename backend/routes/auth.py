@@ -25,7 +25,7 @@ def signup():
 
     result = users_collection.insert_one(user_data) #user_dat의 값을 users_collection객체를 통해 users컬렉션에 삽입, 삽입된 문서(mongodb 데이터)ID를 result에 저장
 
-    return jsonify({'message': '회원가입 성공!', 'id': str(result.inserted_id)}), 201 #result를 사용해서 클라이언트에게 json형식으로 반환, 새로 삽입된 문서ID도 같이 전달달
+    return jsonify({'message': '회원가입 성공!', 'id': str(result.inserted_id)}), 201 #result를 사용해서 클라이언트에게 json형식으로 반환, 새로 삽입된 문서ID도 같이 전달
 
 @auth_bp.route('/login', methods=['POST'])
 def login():

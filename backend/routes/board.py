@@ -9,48 +9,67 @@ board_bp = Blueprint('board', __name__)
 def write_mentor_post():
     data = request.json
     writer = data.get('writer')
-    writer_name = data.get('writerName')  # writerName 받기
+    writer_name = data.get('writerName')
     title = data.get('title')
     content = data.get('content')
 
     if not writer or not title or not content or not writer_name:
         return jsonify({'error': '모든 항목을 입력해주세요.'}), 400
 
+    db = request.environ['app'].db
+
+    # 👉 'users' 컬렉션에서 해당 유저의 profile_image를 조회
+    user = db.users.find_one({'id': writer})
+    if not user:
+        return jsonify({'error': '유저를 찾을 수 없습니다.'}), 404
+
+    writer_profile = user.get('profile_image', '')
+
     post = {
         'writer': writer,
-        'writerName': writer_name,  # writerName 추가
+        'writerName': writer_name,
+        'writerProfile': writer_profile,  # ✅ 프로필 이미지 추가
         'title': title,
         'content': content,
         'timestamp': datetime.now()
     }
 
-    db = request.environ['app'].db
     db.mentor_posts.insert_one(post)
     return jsonify({'message': '멘토 게시글 작성 완료'}), 200
+
 
 # 멘티 글 작성
 @board_bp.route('/mentee/write', methods=['POST'])
 def write_mentee_post():
     data = request.json
     writer = data.get('writer')
-    writer_name = data.get('writerName')  # writerName 받기
+    writer_name = data.get('writerName')
     title = data.get('title')
     content = data.get('content')
 
     if not writer or not title or not content or not writer_name:
         return jsonify({'error': '모든 항목을 입력해주세요.'}), 400
 
+    db = request.environ['app'].db
+
+    user = db.users.find_one({'id': writer})
+    if not user:
+        return jsonify({'error': '유저를 찾을 수 없습니다.'}), 404
+
+    writer_profile = user.get('profile_image', '')
+
     post = {
         'writer': writer,
-        'writerName': writer_name,  # writerName 추가
+        'writerName': writer_name,
+        'writerProfile': writer_profile,  # ✅ 프로필 이미지 추가
         'title': title,
         'content': content,
         'timestamp': datetime.now()
     }
 
-    db = request.environ['app'].db
     db.mentee_posts.insert_one(post)
     return jsonify({'message': '멘티 게시글 작성 완료'}), 200
+
 
 # 멘토 게시글 조회
 @board_bp.route('/mentor/posts', methods=['GET'])
@@ -64,6 +83,7 @@ def get_mentor_posts():
             'id': str(post['_id']),
             'writer': post['writer'],
             'writerName': post['writerName'],  # writerName 추가
+            'writerProfile' :post.get('writerProfile',''),
             'title': post['title'],
             'content': post['content'],
             'timestamp': post['timestamp'].strftime('%Y-%m-%d %H:%M:%S')
@@ -83,6 +103,7 @@ def get_mentee_posts():
             'id': str(post['_id']),
             'writer': post['writer'],
             'writerName': post['writerName'],  # writerName 추가
+            'writerProfile' :post.get('writerProfile',''),
             'title': post['title'],
             'content': post['content'],
             'timestamp': post['timestamp'].strftime('%Y-%m-%d %H:%M:%S')
