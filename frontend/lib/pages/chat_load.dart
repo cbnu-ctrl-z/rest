@@ -6,7 +6,7 @@ import 'dart:convert';
 
 class Chatbutton extends StatefulWidget {
   final String id;
-  const Chatbutton({required this.id});
+  const Chatbutton({Key? key, required this.id}) : super(key: key);
 
   @override
   _ChatbuttonState createState() => _ChatbuttonState();

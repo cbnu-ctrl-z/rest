@@ -59,7 +59,9 @@ class _MyAppState extends State<MyApp> {
         //ThemeNotifier가 바뀔때마다 하위 위젯 테마 변경
         builder: (context, themeNotifier, child) {
           return MaterialApp(
-            title: '멘토 멘티 프로젝트 앱',
+
+            title: '멘톡',
+
             theme: ThemeData(
               primarySwatch: Colors.green,
               brightness: themeNotifier.brightness,

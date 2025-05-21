@@ -13,6 +13,7 @@ class _MentorPostDetailPageState extends State<MentorPostDetailPage> {
   String content = '';
   String writerName = '';
   String writer = '';
+  String writerProfile = '';
   String timestamp = '';
   String userId = '';
   String userName = '';
@@ -28,6 +29,7 @@ class _MentorPostDetailPageState extends State<MentorPostDetailPage> {
       content = args['content'] ?? '';
       writerName = args['writerName'] ?? '';
       writer = args['writerId'] ?? '';
+      writerProfile = args['writerProfile'] ?? '';
       timestamp = args['timestamp'] ?? '';
       userId = args['userID'] ?? '';
       userName = args['userName'] ?? '';
@@ -134,6 +136,7 @@ class _MentorPostDetailPageState extends State<MentorPostDetailPage> {
               'id': userId,
               'receiverId': writer,
               'name': writerName,
+              'profile' : writerProfile,
               'postTitle': title,    // 게시글 제목 추가
               'postContent': content, // 게시글 내용 추가
             });

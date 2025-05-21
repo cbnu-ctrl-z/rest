@@ -19,10 +19,15 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
   DateTime? _lastPressedTime;
+  Key chatTabKey = UniqueKey();
 
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
+
+      if (index == 2) {
+        chatTabKey = UniqueKey();
+      }
     });
   }
 
@@ -31,6 +36,7 @@ class _HomePageState extends State<HomePage> {
     final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>? ?? {};
     final id = args['id'] as String? ?? 'user@example.com';
     final name = args['name'] as String? ?? 'user';
+
 
     return WillPopScope(
       onWillPop: () async {
@@ -93,7 +99,7 @@ class _HomePageState extends State<HomePage> {
           children: [
             HomeTab(id: id, name: name),
             ProjectTab(id: id),
-            Chatbutton(id: id),
+            Chatbutton(key: chatTabKey,id: id),
             ProfilePage(id: id),
           ],
         ),
@@ -228,6 +234,7 @@ class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
         final title = post['title'] ?? '제목 없음';
         final content = post['content'] ?? '내용 없음';
         final writerName = post['writerName'] ?? '익명';
+        final writerProfile = post['writerProfile'] ?? '';
         final writer = post['writer'] ?? '알수없음';
         final rawDate = post['timestamp'];
 
@@ -258,6 +265,7 @@ class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
                   'content': content,
                   'writerName': writerName,
                   'writerId': writer,
+                  'writerProfile' : writerProfile,
                   'timestamp': rawDate,
                   'userID': widget.id,
                   'userName': widget.name,
