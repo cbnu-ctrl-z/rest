@@ -48,7 +48,9 @@ def init_socket(socketio):
                 'receiverId': receiver_id,
                 'message': message_text,
                 'timestamp': datetime.datetime.utcnow().isoformat(),
-                'read': False
+                'read': False,
+                'postTitle':data.get('postTitle'),
+                'postContent':data.get('postContent'),
             }
 
             result = chat_collection.insert_one(message)
@@ -74,7 +76,9 @@ def get_chat_rooms():
             {'$group': {
                 '_id': '$room_id',
                 'lastMessage': {'$last': '$message'},
-                'lastTimestamp': {'$last': '$timestamp'}
+                'lastTimestamp': {'$last': '$timestamp'},
+                'lastPostTitle': {'$last': '$postTitle'},
+                'lastPostContent': {'$last': '$postContent'}
             }},
             {'$sort': {'lastTimestamp': -1}}
         ])
@@ -99,7 +103,9 @@ def get_chat_rooms():
                 'otherUserName': other_user_name,
                 'otherUserProfileUrl': profile_url,  # <-- 응답에 포함
                 'lastMessage': room['lastMessage'],
-                'lastTimestamp': room['lastTimestamp']
+                'lastTimestamp': room['lastTimestamp'],
+                'postTitle': room.get('lastPostTitle'),
+                'postContent': room.get('lastPostContent'),
             })
 
         return jsonify(rooms)

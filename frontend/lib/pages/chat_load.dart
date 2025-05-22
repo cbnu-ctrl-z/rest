@@ -108,6 +108,8 @@ class _ChatbuttonState extends State<Chatbutton> {
                 'receiverId': room['otherUserId'],
                 'name': room['otherUserName'],
                 'profile' : room['otherUserProfileUrl'],
+                'postTitle' : room['postTitle'],
+                'postContent' : room['postContent'],
               }).then((_) {
                 fetchChatRooms();
               });

@@ -38,7 +38,6 @@ class _ChatPageState extends State<ChatPage> {
       receiverName = args['name'] ?? '';
       roomId = args['roomId'] ?? '';
       receiverProfile = args['profile'] ?? '';
-
       postTitle = args['postTitle'];
       postContent = args['postContent'];
     }
@@ -100,6 +99,8 @@ class _ChatPageState extends State<ChatPage> {
       'senderId': senderId,
       'receiverId': receiverId,
       'message': _messageController.text.trim(),
+      'postTitle':postTitle,
+      'postContent':postContent,
     };
 
     print("📤 [DEBUG] 메시지 전송: $messageData");
