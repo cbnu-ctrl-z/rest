@@ -19,7 +19,7 @@ def signup():
         return jsonify({'error': '모든 필드를 입력해야 합니다'}), 400
 
     if users_collection.find_one({'id': id}): #이미 존재하는 이메일이면 에러메세지 반환, find_one으로 email기준 db에서 검색을 한 뒤 일치하는 사용자의 전체 정보를 가져옴!!
-        return jsonify({'error': '이미 존재하는 이메일입니다'}), 409
+        return jsonify({'error': '이미 존재하는 아이디입니다'}), 409
 
     user_data = {'name': name, 'email':email, 'id': id, 'password': password} #딕셔너리 형태로 user_data에 저장
 

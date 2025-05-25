@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:convert';
 import 'package:path/path.dart' as path_package;
 import 'package:async/async.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class ProfilePageDetailed extends StatefulWidget {
   @override
@@ -56,51 +57,48 @@ class _ProfilePageDetailedState extends State<ProfilePageDetailed> {
         setState(() {
           isLoading = false;
         });
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('프로필 정보를 가져오는데 실패했습니다.')));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('프로필 정보를 가져오는데 실패했습니다.'),
+            backgroundColor: Colors.redAccent,
+          ),
+        );
       }
     } catch (e) {
       setState(() {
         isLoading = false;
       });
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('오류가 발생했습니다: $e')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('오류가 발생했습니다: $e'),
+          backgroundColor: Colors.redAccent,
+        ),
+      );
     }
   }
 
   Future<void> _pickImage(ImageSource source) async {
     try {
-      print("이미지 선택 시작: ${source == ImageSource.camera ? '카메라' : '갤러리'}");
-
-      // 이미지 선택기 직접 실행 - 필요한 권한을 자동으로 요청합니다
       final pickedFile = await _picker.pickImage(source: source);
 
       if (pickedFile != null) {
-        print("이미지 선택 완료: ${pickedFile.path}");
         setState(() {
           _imageFile = File(pickedFile.path);
         });
-
-        // 이미지 업로드
         _uploadImage();
-      } else {
-        print("이미지 선택 취소됨");
       }
     } catch (e) {
-      print("이미지 선택 오류: $e");
       String errorMessage = '이미지를 선택할 수 없습니다';
-
-      // 권한 관련 오류인지 확인
       if (e.toString().contains('permission') ||
           e.toString().contains('Permission')) {
         errorMessage = '이미지에 접근하려면 권한이 필요합니다. 설정에서 권한을 허용해주세요.';
       }
-
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(errorMessage)));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(errorMessage),
+          backgroundColor: Colors.redAccent,
+        ),
+      );
     }
   }
 
@@ -137,57 +135,72 @@ class _ProfilePageDetailedState extends State<ProfilePageDetailed> {
 
       if (response.statusCode == 200) {
         final respData = jsonDecode(responseBody);
-
         setState(() {
           profileImageUrl = respData['profile_image_url'];
           isLoading = false;
         });
-
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('프로필 이미지가 업데이트되었습니다!')));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('프로필 이미지가 업데이트되었습니다!'),
+            backgroundColor: Colors.green,
+          ),
+        );
       } else {
         setState(() {
           isLoading = false;
         });
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('이미지 업로드에 실패했습니다: $responseBody')),
+          SnackBar(
+            content: Text('이미지 업로드에 실패했습니다: $responseBody'),
+            backgroundColor: Colors.redAccent,
+          ),
         );
       }
     } catch (e) {
       setState(() {
         isLoading = false;
       });
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('오류가 발생했습니다: $e')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('오류가 발생했습니다: $e'),
+          backgroundColor: Colors.redAccent,
+        ),
+      );
     }
   }
 
   void _showImageSourceActionSheet() {
     showModalBottomSheet(
       context: context,
+      backgroundColor: Colors.transparent,
       builder: (BuildContext ctx) {
-        return SafeArea(
-          child: Wrap(
-            children: [
-              ListTile(
-                leading: Icon(Icons.photo_library),
-                title: Text('갤러리에서 선택'),
-                onTap: () {
-                  Navigator.of(ctx).pop();
-                  _pickImage(ImageSource.gallery);
-                },
-              ),
-              ListTile(
-                leading: Icon(Icons.photo_camera),
-                title: Text('카메라로 촬영'),
-                onTap: () {
-                  Navigator.of(ctx).pop();
-                  _pickImage(ImageSource.camera);
-                },
-              ),
-            ],
+        return Container(
+          decoration: BoxDecoration(
+            color: Theme.of(context).scaffoldBackgroundColor,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+          ),
+          child: SafeArea(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ListTile(
+                  leading: Icon(Icons.photo_library, color: Color(0xFF36eff4)),
+                  title: Text('갤러리에서 선택', style: GoogleFonts.poppins()),
+                  onTap: () {
+                    Navigator.of(ctx).pop();
+                    _pickImage(ImageSource.gallery);
+                  },
+                ),
+                ListTile(
+                  leading: Icon(Icons.photo_camera, color: Color(0xFF36eff4)),
+                  title: Text('카메라로 촬영', style: GoogleFonts.poppins()),
+                  onTap: () {
+                    Navigator.of(ctx).pop();
+                    _pickImage(ImageSource.camera);
+                  },
+                ),
+              ],
+            ),
           ),
         );
       },
@@ -196,103 +209,169 @@ class _ProfilePageDetailedState extends State<ProfilePageDetailed> {
 
   @override
   Widget build(BuildContext context) {
-    return isLoading
-        ? Center(child: CircularProgressIndicator())
-        : SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            SizedBox(height: 20),
-            Stack(
-              children: [
-                CircleAvatar(
-                  radius: 60,
-                  backgroundColor: Colors.grey[200],
-                  backgroundImage:
-                  profileImageUrl != null
-                      ? NetworkImage(profileImageUrl!)
-                      : _imageFile != null
-                      ? FileImage(_imageFile!) as ImageProvider
-                      : AssetImage('assets/simpo_b.jpg'),
-                ),
-                Positioned(
-                  bottom: 0,
-                  right: 0,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.green,
-                      shape: BoxShape.circle,
-                    ),
-                    child: IconButton(
-                      icon: Icon(Icons.camera_alt, color: Colors.white),
-                      onPressed: _showImageSourceActionSheet,
-                    ),
+    return Scaffold(
+      body: isLoading
+          ? Center(child: CircularProgressIndicator(color: Color(0xFF36eff4)))
+          : CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            expandedHeight: 200.0,
+            floating: false,
+            pinned: true,
+            automaticallyImplyLeading: false, // 뒤로가기 버튼 제거
+            flexibleSpace: FlexibleSpaceBar(
+              title: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              ),
+              background: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [Color(0xFF36eff4), Color(0xFF8A6FF0)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
                   ),
                 ),
-              ],
-            ),
-            SizedBox(height: 30),
-            Text(
-              userName ?? '이름 없음',
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 8),
-            Text(
-              userEmail ?? '이메일 없음',
-              style: TextStyle(fontSize: 16, color: Colors.grey[600]),
-            ),
-            SizedBox(height: 8),
-            Text(
-              'ID: $userId',
-              style: TextStyle(fontSize: 16, color: Colors.grey[600]),
-            ),
-            SizedBox(height: 30),
-            Divider(),
-            ListTile(
-              leading: Icon(Icons.assignment_turned_in, color: Colors.blue),
-              title: Text('완료한 프로젝트'),
-              trailing: Icon(Icons.chevron_right),
-              onTap: () {
-                Navigator.pushNamed(
-                  context,
-                  '/done_projects',
-                  arguments: {'id': userId},
-                );
-              },
-            ),
-            Divider(),
-            ListTile(
-              leading: Icon(Icons.star, color: Colors.orange),
-              title: Text('내 평가'),
-              trailing: Icon(Icons.chevron_right),
-              onTap: () {
-                Navigator.pushNamed(
-                  context,
-                  '/my_reviews',
-                  arguments: {'id': userId},
-                );
-              },
-            ),
-            Divider(),
-            ListTile(
-              leading: Icon(Icons.logout, color: Colors.red),
-              title: Text(
-                '로그아웃',
-                style: TextStyle(color: Colors.red),
+                child: Center(
+                  child: Stack(
+                    alignment: Alignment.bottomRight,
+                    children: [
+                      CircleAvatar(
+                        radius: 70,
+                        backgroundColor: Colors.white.withOpacity(0.2),
+                        backgroundImage: profileImageUrl != null
+                            ? NetworkImage(profileImageUrl!)
+                            : _imageFile != null
+                            ? FileImage(_imageFile!) as ImageProvider
+                            : AssetImage('assets/basic.png'),
+                      ),
+                      GestureDetector(
+                        onTap: _showImageSourceActionSheet,
+                        child: Container(
+                          padding: EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black26,
+                                blurRadius: 4,
+                                offset: Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          child: Icon(
+                            Icons.camera_alt,
+                            color: Color(0xFF36eff4),
+                            size: 24,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
-              onTap: () {
-                // 로그아웃 로직: 필요 시 토큰 삭제 등 수행 가능
-                Navigator.pushNamedAndRemoveUntil(
-                  context,
-                  '/login',  // 로그인 화면 라우트 이름
-                      (route) => false, // 모든 이전 화면 제거
-                );
-              },
             ),
-          ],
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                children: [
+                  Text(
+                    userName ?? '이름 없음',
+                    style: GoogleFonts.poppins(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).textTheme.bodyLarge!.color,
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    userEmail ?? '이메일 없음',
+                    style: GoogleFonts.poppins(
+                      fontSize: 16,
+                      color: Colors.grey[600],
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    'ID: $userId',
+                    style: GoogleFonts.poppins(
+                      fontSize: 16,
+                      color: Colors.grey[600],
+                    ),
+                  ),
+                  SizedBox(height: 24),
+                  _buildMenuCard(
+                    icon: Icons.assignment_turned_in,
+                    color: Color(0xFF36eff4),
+                    title: '완료한 프로젝트',
+                    onTap: () {
+                      Navigator.pushNamed(
+                        context,
+                        '/done_projects',
+                        arguments: {'id': userId},
+                      );
+                    },
+                  ),
+                  SizedBox(height: 16),
+                  _buildMenuCard(
+                    icon: Icons.star,
+                    color: Colors.orange,
+                    title: '내 평가',
+                    onTap: () {
+                      Navigator.pushNamed(
+                        context,
+                        '/my_reviews',
+                        arguments: {'id': userId},
+                      );
+                    },
+                  ),
+                  SizedBox(height: 16),
+                  _buildMenuCard(
+                    icon: Icons.logout,
+                    color: Colors.redAccent,
+                    title: '로그아웃',
+                    onTap: () {
+                      Navigator.pushNamedAndRemoveUntil(
+                        context,
+                        '/login',
+                            (route) => false,
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMenuCard({
+    required IconData icon,
+    required Color color,
+    required String title,
+    required VoidCallback onTap,
+  }) {
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      child: ListTile(
+        leading: Icon(icon, color: color, size: 28),
+        title: Text(
+          title,
+          style: GoogleFonts.poppins(
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+            color: title == '로그아웃'
+                ? Colors.redAccent
+                : Theme.of(context).textTheme.bodyLarge!.color,
+          ),
         ),
+        trailing: Icon(Icons.chevron_right, color: Colors.grey),
+        onTap: onTap,
       ),
     );
   }

@@ -183,9 +183,6 @@ def update_step_completion(project_id, step_index):
 #-----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
-
-
-
 @project_bp.route('/reviews/create', methods=['POST'])
 def create_reviews():
     try:
