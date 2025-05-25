@@ -23,6 +23,7 @@ dependencies:
   flutter_keyboard_visibility: ^6.0.0
   flutter_dotenv: ^5.2.1
   dotted_border: ^2.1.0
+  event_bus: ^2.0.0
 
 dev_dependencies:
   flutter_test:

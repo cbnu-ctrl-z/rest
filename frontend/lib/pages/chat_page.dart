@@ -3,6 +3,7 @@ import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'events.dart'; // EventBus 임포트
 
 class ChatPage extends StatefulWidget {
   const ChatPage({Key? key}) : super(key: key);
@@ -50,10 +51,7 @@ class _ChatPageState extends State<ChatPage> {
 
     _socket = IO.io(
       apiUrl,
-      IO.OptionBuilder()
-          .setTransports(['websocket'])
-          .disableAutoConnect()
-          .build(),
+      IO.OptionBuilder().setTransports(['websocket']).disableAutoConnect().build(),
     );
 
     _socket.onConnect((_) {
@@ -99,8 +97,8 @@ class _ChatPageState extends State<ChatPage> {
       'senderId': senderId,
       'receiverId': receiverId,
       'message': _messageController.text.trim(),
-      'postTitle':postTitle,
-      'postContent':postContent,
+      'postTitle': postTitle,
+      'postContent': postContent,
     };
 
     print("📤 [DEBUG] 메시지 전송: $messageData");
@@ -122,9 +120,8 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   Future<void> _createCollaborationProject() async {
-    String chatHistory = _messages.map((msg) =>
-    "${msg['senderId'] == senderId ? '나' : receiverName}: ${msg['message']}"
-    ).join('\n');
+    String chatHistory =
+    _messages.map((msg) => "${msg['senderId'] == senderId ? '나' : receiverName}: ${msg['message']}").join('\n');
 
     try {
       setState(() {
@@ -148,6 +145,7 @@ class _ChatPageState extends State<ChatPage> {
 
       if (response.statusCode == 200) {
         final projectData = json.decode(response.body);
+        eventBus.fire(ProjectCreatedEvent()); // 프로젝트 생성 이벤트 발행
         _showProjectCreatedDialog(projectData['id']);
       } else {
         _showErrorDialog('프로젝트 생성에 실패했습니다.');
@@ -166,22 +164,11 @@ class _ChatPageState extends State<ChatPage> {
       context: context,
       builder: (context) => AlertDialog(
         title: Text('프로젝트 생성 완료'),
-        content: Text('협업 프로젝트가 성공적으로 생성되었습니다.'),
+        content: Text('프로젝트가 성공적으로 생성되었습니다.'),
         actions: [
           TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text('닫기'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-              Navigator.pushNamed(
-                context,
-                '/project_detail',
-                arguments: {'projectId': projectId},
-              );
-            },
-            child: Text('프로젝트로 이동'),
+            onPressed: () => Navigator.of(context).pop(), // 다이얼로그 닫기
+            child: Text('확인'),
           ),
         ],
       ),

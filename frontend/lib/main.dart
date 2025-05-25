@@ -14,15 +14,16 @@ import 'pages/mentee_post_detail_page.dart';
 import 'pages/mentor_post_detail_page.dart';
 import 'pages/project_page.dart';
 import 'pages/project_detail.dart';
+import 'pages/done_project_page.dart';
+import 'pages/my_review_page.dart';
 
-
-void main() async{
-  WidgetsFlutterBinding.ensureInitialized(); //flutter 엔진 및 위젯트리 연결
-  await dotenv.load(fileName: ".env");//환경변수 등록
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: ".env");
   runApp(MyApp());
 }
 
-class ThemeNotifier with ChangeNotifier { //앱의 테마를 관리하는 클래스
+class ThemeNotifier with ChangeNotifier {
   Brightness _brightness = Brightness.light;
 
   Brightness get brightness => _brightness;
@@ -38,24 +39,12 @@ class MyApp extends StatefulWidget {
   _MyAppState createState() => _MyAppState();
 }
 
-  class _MyAppState extends State<MyApp> {
-    @override
-    void initState() {
-      super.initState();
-      _goToLoginPage();
-    }
-
-  // 스플래시 화면 후 회원가입 화면으로 이동하는 함수
-  Future<void> _goToLoginPage() async {//해당 함수 안 쓰는거 같은데
-    await Future.delayed(Duration(seconds: 2)); // 스플래시 화면 표시 시간 (2초)
-    Navigator.pushReplacementNamed(context, '/signup'); // 회원가입 화면으로 이동
-  }
-
+class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => ThemeNotifier(), //테마조정 인스턴스 생성
-      child: Consumer<ThemeNotifier>( //ThemeNotifier가 바뀔때마다 하위 위젯 테마 변경
+      create: (_) => ThemeNotifier(),
+      child: Consumer<ThemeNotifier>(
         builder: (context, themeNotifier, child) {
           return MaterialApp(
             title: '멘톡',
@@ -63,7 +52,7 @@ class MyApp extends StatefulWidget {
               primarySwatch: Colors.green,
               brightness: themeNotifier.brightness,
             ),
-            initialRoute: '/splash', // 항상 스플래시 화면을 첫 화면으로 설정
+            initialRoute: '/splash',
             routes: {
               '/splash': (context) => SplashPage(),
               '/signup': (context) => SignUpPage(),
@@ -75,8 +64,26 @@ class MyApp extends StatefulWidget {
               '/menteeWrite': (context) => MenteeWritePage(),
               '/mentee_post_detail': (context) => MenteePostDetailPage(),
               '/mentor_post_detail': (context) => MentorPostDetailPage(),
-              '/project' : (context) => ProjectPage(),
-              '/project_detail': (context) => ProjectDetailPage(),
+              '/done_projects': (context) => DoneProjectPage(),
+              '/my_reviews': (context) => MyReviewPage(),
+              '/project': (context) {
+                final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>? ?? {};
+                final userId = args['userId'] ?? 'defaultUserId';
+                return ProjectPage(userId: userId);
+              },
+              '/project_detail': (context) {
+                final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>? ?? {};
+                final projectId = args['projectId'];
+                final currentUserId = args['currentUserId'] ?? 'defaultUserId';
+                if (projectId == null) {
+                  return Scaffold(body: Center(child: Text('프로젝트 ID가 없습니다.')));
+                }
+                return ProjectDetailPage(
+                  projectId: projectId,
+                  currentUserId: currentUserId,
+                );
+              },
+
             },
           );
         },

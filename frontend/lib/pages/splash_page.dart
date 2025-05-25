@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
 
 class SplashPage extends StatefulWidget {
@@ -27,16 +28,26 @@ class _SplashPageState extends State<SplashPage> {
       });
     });
 
-    // 3초 후 다음 화면으로 이동
-    Timer(Duration(seconds: 3), () {
-      Navigator.pushReplacementNamed(context, '/signup');
+    // 3초 후 로그인 상태 확인 및 다음 화면으로 이동
+    Timer(Duration(seconds: 3), () async {
+      final prefs = await SharedPreferences.getInstance();
+      final userId = prefs.getString('userId');
+      if (userId != null) {
+        Navigator.pushReplacementNamed(
+          context,
+          '/home',
+          arguments: {'userId': userId},
+        );
+      } else {
+        Navigator.pushReplacementNamed(context, '/login');
+      }
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white, // 흰 배경
+      backgroundColor: Colors.white,
       body: Center(
         child: AnimatedOpacity(
           opacity: opacity,

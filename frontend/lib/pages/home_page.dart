@@ -4,12 +4,12 @@ import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'dart:async'; // StreamSubscription 오류 해결
 
 // 페이지 컴포넌트
 import 'project_page.dart';
 import 'chat_load.dart';
 import 'profile_page.dart';
-
 
 class HomePage extends StatefulWidget {
   @override
@@ -24,7 +24,6 @@ class _HomePageState extends State<HomePage> {
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
-
       if (index == 2) {
         chatTabKey = UniqueKey();
       }
@@ -36,7 +35,6 @@ class _HomePageState extends State<HomePage> {
     final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>? ?? {};
     final id = args['id'] as String? ?? 'user@example.com';
     final name = args['name'] as String? ?? 'user';
-
 
     return WillPopScope(
       onWillPop: () async {
@@ -99,7 +97,7 @@ class _HomePageState extends State<HomePage> {
           children: [
             HomeTab(id: id, name: name),
             ProjectTab(id: id),
-            Chatbutton(key: chatTabKey,id: id),
+            Chatbutton(key: chatTabKey, id: id),
             ProfilePage(id: id),
           ],
         ),
@@ -120,8 +118,6 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
-
-// --------------------- HomeTab ---------------------
 
 class HomeTab extends StatefulWidget {
   final String id;
@@ -217,11 +213,10 @@ class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
             ).then((_) => fetchPosts());
           }
         },
-        backgroundColor: Colors.red, // 진한 빨간색
-        shape: CircleBorder(), // 동그란 모양
-        child: Icon(Icons.edit, color: Colors.white), // 흰색 연필 아이콘
+        backgroundColor: Colors.red,
+        shape: CircleBorder(),
+        child: Icon(Icons.edit, color: Colors.white),
       ),
-
     );
   }
 
@@ -249,7 +244,7 @@ class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
         }
 
         return Card(
-          elevation: 4, // 그림자 효과를 더 강조
+          elevation: 4,
           margin: const EdgeInsets.symmetric(vertical: 12),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           color: Colors.white,
@@ -265,7 +260,7 @@ class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
                   'content': content,
                   'writerName': writerName,
                   'writerId': writer,
-                  'writerProfile' : writerProfile,
+                  'writerProfile': writerProfile,
                   'timestamp': rawDate,
                   'userID': widget.id,
                   'userName': widget.name,
@@ -277,7 +272,6 @@ class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // 제목
                   Text(
                     title,
                     style: TextStyle(
@@ -287,7 +281,6 @@ class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
                     ),
                   ),
                   SizedBox(height: 8),
-                  // 내용
                   Text(
                     content,
                     maxLines: 2,
@@ -298,7 +291,6 @@ class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
                     ),
                   ),
                   SizedBox(height: 12),
-                  // 작성자 및 날짜
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -325,7 +317,6 @@ class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
                     ],
                   ),
                   SizedBox(height: 8),
-                  // 구분선
                   Divider(color: Colors.grey[300], thickness: 1),
                 ],
               ),
@@ -335,10 +326,7 @@ class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
       },
     );
   }
-
 }
-
-// --------------------- ProjectTab ---------------------
 
 class ProjectTab extends StatelessWidget {
   final String id;
@@ -346,11 +334,9 @@ class ProjectTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ProjectPage(); // 필요하면 id 전달
+    return ProjectPage(userId: id);
   }
 }
-
-// --------------------- ProfilePage ---------------------
 
 class ProfilePage extends StatelessWidget {
   final String id;
