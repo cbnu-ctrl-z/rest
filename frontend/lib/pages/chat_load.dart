@@ -18,9 +18,6 @@ class _ChatbuttonState extends State<Chatbutton> {
   List<dynamic> chatRooms = [];
   bool isLoading = true;
 
-  // 그라데이션 색상 정의 (HomePage 및 ChatPage와 동일)
-  final List<Color> _gradientColors = const [Color(0xFF36eff4), Color(0xFF8A6FF0)];
-
   @override
   void initState() {
     super.initState();
@@ -78,140 +75,137 @@ class _ChatbuttonState extends State<Chatbutton> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white, // 배경색 통일
-      appBar: AppBar(
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: _gradientColors,
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-          ),
-        ),
-        elevation: 0, // AppBar 그림자 제거
-        title: const Text(
-          '채팅',
-          style: TextStyle(
-            color: Colors.white, // 제목 색상 변경
-            fontWeight: FontWeight.bold,
-            fontSize: 20,
-          ),
-        ),
-        centerTitle: true,
-        automaticallyImplyLeading: false, // 뒤로가기 버튼 제거 (탭 페이지이므로)
-      ),
-      body: isLoading
-          ? Center(
-        child: CircularProgressIndicator(
-          valueColor: AlwaysStoppedAnimation<Color>(_gradientColors[0]), // 그라데이션 시작 색상
-        ),
-      )
-          : chatRooms.isEmpty
-          ? Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.chat_bubble_outline,
-              size: 80,
-              color: Colors.grey[300],
-            ),
-            const SizedBox(height: 20),
-            Text(
-              '아직 시작된 채팅이 없습니다.',
-              style: TextStyle(fontSize: 18, color: Colors.grey[600]),
-            ),
-            const SizedBox(height: 5),
-            Text(
-              '게시글에서 멘토/멘티에게 채팅을 시작해보세요!',
-              style: TextStyle(fontSize: 14, color: Colors.grey[500]),
-            ),
-          ],
-        ),
-      )
-          : RefreshIndicator( // 새로고침 기능 추가
-        onRefresh: fetchChatRooms,
-        color: _gradientColors[0], // 새로고침 아이콘 색상
-        child: ListView.builder(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          itemCount: chatRooms.length,
-          itemBuilder: (context, index) {
-            final room = chatRooms[index];
-            final String otherUserName = room['otherUserName'] ?? '알 수 없음';
-            final String lastMessage = room['lastMessage'] ?? '대화 기록 없음';
-            final String lastTimestamp = room['lastTimestamp'] ?? '';
-            final String? otherUserProfileUrl = room['otherUserProfileUrl'];
+      backgroundColor: Colors.white, // HomePage와 동일한 배경색
+      body: Column(
+        children: [
+          SizedBox(height: 20), // 상단 여백 (HomePage와 동일)
+          Expanded(
+            child: isLoading
+                ? Center(
+              child: CircularProgressIndicator(),
+            )
+                : chatRooms.isEmpty
+                ? Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.chat_bubble_outline,
+                    size: 80,
+                    color: Colors.grey[300],
+                  ),
+                  const SizedBox(height: 20),
+                  Text(
+                    '아직 시작된 채팅이 없습니다.',
+                    style: TextStyle(fontSize: 18, color: Colors.grey[600]),
+                  ),
+                  const SizedBox(height: 5),
+                  Text(
+                    '게시글에서 멘토/멘티에게 채팅을 시작해보세요!',
+                    style: TextStyle(fontSize: 14, color: Colors.grey[500]),
+                  ),
+                ],
+              ),
+            )
+                : RefreshIndicator(
+              onRefresh: fetchChatRooms,
+              child: ListView.builder(
+                padding: const EdgeInsets.all(16), // HomePage와 동일한 패딩
+                itemCount: chatRooms.length,
+                itemBuilder: (context, index) {
+                  final room = chatRooms[index];
+                  final String otherUserName = room['otherUserName'] ?? '알 수 없음';
+                  final String lastMessage = room['lastMessage'] ?? '대화 기록 없음';
+                  final String lastTimestamp = room['lastTimestamp'] ?? '';
+                  final String? otherUserProfileUrl = room['otherUserProfileUrl'];
 
-            return Card(
-              margin: const EdgeInsets.symmetric(vertical: 8),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-              elevation: 3, // 카드 그림자 추가
-              child: InkWell( // 탭 효과를 위해 InkWell 사용
-                borderRadius: BorderRadius.circular(16),
-                onTap: () {
-                  Navigator.pushNamed(context, '/chat', arguments: {
-                    'roomId': room['roomId'],
-                    'id': widget.id,
-                    'receiverId': room['otherUserId'],
-                    'name': otherUserName,
-                    'profile': otherUserProfileUrl,
-                    'postTitle': room['postTitle'],
-                    'postContent': room['postContent'],
-                  }).then((_) {
-                    // 채팅 페이지에서 돌아왔을 때 채팅방 목록 새로고침
-                    fetchChatRooms();
-                  });
-                },
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                  child: Row(
-                    children: [
-                      // --- 프로필 이미지 로직 수정 시작 ---
-                      CircleAvatar(
-                        radius: 28, // 아바타 크기 확대
-                        // otherUserProfileUrl이 null이거나 비어있으면 assets/basic.png 사용
-                        backgroundImage: (otherUserProfileUrl != null && otherUserProfileUrl.isNotEmpty)
-                            ? NetworkImage(otherUserProfileUrl)
-                            : const AssetImage('assets/basic.png') as ImageProvider, // 기본 이미지 경로
-                        backgroundColor: Colors.grey[200], // 프로필 이미지 없을 때 기본 배경
-
-                      ),
-                      // --- 프로필 이미지 로직 수정 끝 ---
-                      const SizedBox(width: 15),
-                      Expanded(
+                  return Card(
+                    elevation: 4, // HomePage와 동일한 elevation
+                    margin: const EdgeInsets.symmetric(vertical: 12), // HomePage와 동일한 마진
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)), // HomePage와 동일한 모양
+                    color: Colors.white, // HomePage와 동일한 배경색
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(16), // HomePage와 동일한 모양
+                      onTap: () {
+                        Navigator.pushNamed(context, '/chat', arguments: {
+                          'roomId': room['roomId'],
+                          'id': widget.id,
+                          'receiverId': room['otherUserId'],
+                          'name': otherUserName,
+                          'profile': otherUserProfileUrl,
+                          'postTitle': room['postTitle'],
+                          'postContent': room['postContent'],
+                        }).then((_) {
+                          // 채팅 페이지에서 돌아왔을 때 채팅방 목록 새로고침
+                          fetchChatRooms();
+                        });
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(16), // HomePage와 동일한 패딩
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              otherUserName,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 17,
-                                color: Colors.black87,
-                              ),
+                            Row(
+                              children: [
+                                CircleAvatar(
+                                  radius: 25,
+                                  backgroundImage: (otherUserProfileUrl != null && otherUserProfileUrl.isNotEmpty)
+                                      ? NetworkImage(otherUserProfileUrl)
+                                      : const AssetImage('assets/basic.png') as ImageProvider,
+                                  backgroundColor: Colors.grey[200],
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        otherUserName,
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16, // HomePage 제목과 동일한 크기
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                      SizedBox(height: 8),
+                                      Text(
+                                        lastMessage,
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                          color: Colors.black87, // HomePage와 동일한 컬러
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
                             ),
-                            const SizedBox(height: 4),
-                            Text(
-                              lastMessage,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+                            SizedBox(height: 12),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Icon(Icons.access_time, color: Colors.grey, size: 14), // HomePage와 동일한 아이콘
+                                SizedBox(width: 4),
+                                Text(
+                                  formatKSTTime(lastTimestamp),
+                                  style: TextStyle(color: Colors.grey, fontSize: 12), // HomePage와 동일한 스타일
+                                ),
+                              ],
                             ),
+                            SizedBox(height: 8),
+                            Divider(color: Colors.grey[300], thickness: 1), // HomePage와 동일한 구분선
                           ],
                         ),
                       ),
-                      Text(
-                        formatKSTTime(lastTimestamp),
-                        style: TextStyle(fontSize: 12, color: Colors.grey[500]),
-                      ),
-                    ],
-                  ),
-                ),
+                    ),
+                  );
+                },
               ),
-            );
-          },
-        ),
+            ),
+          ),
+        ],
       ),
     );
   }
