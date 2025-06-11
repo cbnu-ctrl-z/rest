@@ -42,9 +42,6 @@ Fundamental of Open Source SW Project
 ┣ .gitignore
 ┗ README.md
 ```
-## 채택기술
-- 사용한 기술 스택, 라이브러리, 툴 등의 정보를 작성하기
-## 페이지별 기능
-- 기능 작동 화면
-## 트러블슈팅
-- 프로젝트를 진행하면서 발생했던 문제와 해결 과정
+
+## 완성도 
+80%
